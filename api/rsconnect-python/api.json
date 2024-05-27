@@ -1,0 +1,12 @@
+{
+    "https://connect.doit.wisc.edu/": {
+        "server_url": "https://connect.doit.wisc.edu/",
+        "filename": "/Users/mariaoros/Documents/DataScienceInstitute/Projects/Jingyi_forecastingmodel/stock-api-fastapi/api",
+        "app_url": "https://connect.doit.wisc.edu/content/36e66cbf-6df9-42d8-9f68-8789f773ccf8/",
+        "app_id": "36e66cbf-6df9-42d8-9f68-8789f773ccf8",
+        "app_guid": "36e66cbf-6df9-42d8-9f68-8789f773ccf8",
+        "title": "api",
+        "app_mode": "python-fastapi",
+        "app_store_version": 1
+    }
+}
