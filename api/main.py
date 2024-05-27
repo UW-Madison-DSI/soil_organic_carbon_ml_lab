@@ -59,9 +59,8 @@ def get_prediction(request: PredictionRequest) -> float:
         model = get_model()
 
         prediction = model.predict(data_to_predict)[0]
-        #classes = ['Benign', 'Malignant']
-        #prediction = classes[index]
         return prediction
+        
     except Exception as e:
         return str(e)
 
@@ -74,5 +73,4 @@ def make_model_prediction(request: PredictionRequest):
     Input: Prediction request
     Output: Prediction response. The prediction is 0 for Benign samples and 1 for Malignant samples, so we return the name instead the number
     """
-    #return PredictionResponse(diagnostic=get_prediction(request))
-    return get_prediction(request)
+    return PredictionResponse(socs=get_prediction(request))
