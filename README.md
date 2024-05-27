@@ -22,8 +22,7 @@ This machine learning model predicts socs. So here are the key features of this 
 
 <h1> Front-End Stack</h1>
 
-Currently, the project is on **Front-End** phase. It is planned to be developed using the framework `Angular CLI`, which helps us to consume the REST API. The source code can be viewed in the directory `/static`. Here's how it looks
-
+Currently, the project is on **Front-End** phase. It is planned to be developed using the framework `Angular CLI`, which helps us to consume the REST API. 
 
 ## How To Use
 
