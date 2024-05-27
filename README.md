@@ -13,7 +13,7 @@ Huang et al., 2019
 
 This machine learning model predicts socs. So here are the key features of this project:
 
-* The model is supported under a backend API built with `FastAPI` through the `POST` method, it asks the patients data as `JSON` format and returns its socs prediction in the same format. The API is served in posit connect: https://connect.doit.wisc.edu/content/36e66cbf-6df9-42d8-9f68-8789f773ccf8
+* The model is supported under a backend API built with `FastAPI` through the `POST` method, it asks the patients data as `JSON` format and returns its socs prediction in the same format. The API is served in posit connect: https://connect.doit.wisc.edu/content/36e66cbf-6df9-42d8-9f68-8789f773ccf8 see example below to test out.
 
 * The `Dockerfile` saves all required information to run the model in another machines through a container. Just running the `initializer.sh` is enough to turn the whole system on.
 
@@ -31,10 +31,10 @@ To clone and run this application, follow these steps
 
 ```bash
 # Clone this repository
-$ git clone 
+$ git clone https://github.com/UW-Madison-DSI/cyberinfraestructure_dsp_forecasting.git
 
 # Go into the repository
-$ cd 
+$ cd cyberinfraestructure_dsp_forecasting
 
 # Install requirements
 
@@ -80,22 +80,11 @@ http://127.0.0.1:8001
 
 ```
 
-## Credits
+## Resources
 
 This software uses the following data and packages:
 
 - [FastAPI](https://fastapi.tiangolo.com)
-- [GCP](https://cloud.google.com)
 - [Docker](https://www.docker.com)
 - [Scikit-Learn](https://scikit-learn.org/stable/)
-- [DVC](https://dvc.org)
 - [Joblib](https://joblib.readthedocs.io/en/latest/)
-
-
-## License
-
-MIT
-
----
-
-> Web Site
