@@ -36,5 +36,5 @@ jobs:
       env:
         RSCONNECT_API_KEY: ${{ secrets.RSCONNECT_API_KEY }}
       run: |
-        chmod +x path/to/api/deploy.sh
-        ./path/to/api/deploy.sh
+        chmod +x deploy.sh
+        ./deploy.sh
