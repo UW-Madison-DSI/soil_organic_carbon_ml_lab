@@ -4,5 +4,7 @@ if [ -z "$RSCONNECT_API_KEY" ]; then
 fi
 
 pip install -U rsconnect-python
+cd ./api_socs_forecast/ || exit
+
 # Deploy using the environment variable for the API key
-rsconnect deploy fastapi --server https://connect.doit.wisc.edu/ --api-key $RSCONNECT_API_KEY --no-verify ./api_socs_forecast/
+rsconnect deploy fastapi --server https://connect.doit.wisc.edu/ --api-key $RSCONNECT_API_KEY --ca-bundle custom_bundle.crt .
