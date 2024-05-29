@@ -3,8 +3,6 @@ import joblib
 from sklearn.pipeline import Pipeline
 from pydantic import BaseModel
 from pandas import DataFrame
-import os
-from io import BytesIO
 
 
 class PredictionRequest(BaseModel):
@@ -40,10 +38,10 @@ def get_prediction(request: PredictionRequest) -> str:
     Input: request. PredictionRequest instance used to compute the prediction of the model
     Output: prediction. Prediction of the model
     """
-    data_to_predict = transform_to_dataframe(request)
-    try:
-        loaded_rf = joblib.load("rf_model.joblib")
 
+    try:
+        data_to_predict = transform_to_dataframe(request)
+        loaded_rf = joblib.load("rf_model.joblib")
         predict = loaded_rf.predict(data_to_predict)
         return predict[0]
     except Exception as e:
