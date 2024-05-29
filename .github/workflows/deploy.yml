@@ -38,4 +38,5 @@ jobs:
         RSCONNECT_API_KEY: ${{ secrets.RSCONNECT_API_KEY }}
       run: |
         chmod +x deploy.sh
-        export REQUESTS_CA_BUNDLE="" ./deploy.sh
+        export REQUESTS_CA_BUNDLE="" 
+        ./deploy.sh
