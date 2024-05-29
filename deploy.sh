@@ -5,4 +5,4 @@ fi
 
 pip install -U rsconnect-python
 # Deploy using the environment variable for the API key
-rsconnect deploy fastapi --server https://connect.doit.wisc.edu/ --api-key $RSCONNECT_API_KEY --no-verify-ssl ./api_socs_forecast/
+rsconnect deploy fastapi --server https://connect.doit.wisc.edu/ --api-key $RSCONNECT_API_KEY --no-verify ./api_socs_forecast/
