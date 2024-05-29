@@ -97,6 +97,8 @@ custom_file.txt
 
 # Model files
 *.pkl
+*.crt
 
 # macOS
 .DS_Store
+.idea/
