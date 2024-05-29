@@ -3,6 +3,8 @@ import joblib
 from sklearn.pipeline import Pipeline
 from pydantic import BaseModel
 from pandas import DataFrame
+import os
+from io import BytesIO
 
 
 class PredictionRequest(BaseModel):
@@ -24,17 +26,9 @@ class PredictionRequest(BaseModel):
 class PredictionResponse(BaseModel):
     soil_organic_carbon_stock: float
 
-def get_model() -> Pipeline:
-    """
-    Input: model path
-    Output: model
-    """
-    loaded_rf = joblib.load("rf_model.joblib")
-    return loaded_rf
-
 def transform_to_dataframe(class_model: BaseModel) -> DataFrame:
     """
-    Input: data as JSON
+    Input: Soil profile data as JSON
     Output: Dataframe with the same info
     """
     dictionary = {key: [value] for key, value in class_model.dict().items()}
@@ -46,9 +40,10 @@ def get_prediction(request: PredictionRequest) -> str:
     Input: request. PredictionRequest instance used to compute the prediction of the model
     Output: prediction. Prediction of the model
     """
+    data_to_predict = transform_to_dataframe(request)
     try:
-        data_to_predict = transform_to_dataframe(request)
-        loaded_rf = get_model()
+        loaded_rf = joblib.load("rf_model.joblib")
+
         predict = loaded_rf.predict(data_to_predict)
         return predict[0]
     except Exception as e:
@@ -62,4 +57,5 @@ def make_model_prediction(request: PredictionRequest):
     Input: Prediction request
     Output: Prediction response.
     """
+
     return PredictionResponse(soil_organic_carbon_stock=get_prediction(request))

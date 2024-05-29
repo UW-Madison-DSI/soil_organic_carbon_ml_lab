@@ -1,0 +1,40 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9.6'
+
+    - name: Set up environment variables
+      env:
+        RSCONNECT_API_KEY: ${{ secrets.RSCONNECT_API_KEY }}
+      run: echo "Environment variable set"
+
+    - name: Run deploy script
+      env:
+        RSCONNECT_API_KEY: ${{ secrets.RSCONNECT_API_KEY }}
+      run: |
+        chmod +x path/to/api/deploy.sh
+        ./path/to/api/deploy.sh
