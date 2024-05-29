@@ -30,11 +30,12 @@ jobs:
     - name: Set up environment variables
       env:
         RSCONNECT_API_KEY: ${{ secrets.RSCONNECT_API_KEY }}
-      run: echo "Environment variable set"
+        REQUESTS_CA_BUNDLE: ""
+      run: echo "Environment variables set"
 
     - name: Run deploy script
       env:
         RSCONNECT_API_KEY: ${{ secrets.RSCONNECT_API_KEY }}
       run: |
         chmod +x deploy.sh
-        ./deploy.sh
+        REQUESTS_CA_BUNDLE="" ./deploy.sh
