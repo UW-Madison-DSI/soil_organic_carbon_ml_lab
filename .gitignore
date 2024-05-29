@@ -96,7 +96,6 @@ custom/
 custom_file.txt
 
 # Model files
-*.joblib
 *.pkl
 
 # macOS
