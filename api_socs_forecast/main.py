@@ -1,8 +1,9 @@
-from fastapi import FastAPI
-import joblib
-from sklearn.pipeline import Pipeline
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from pandas import DataFrame
+import joblib
+from sklearn.pipeline import Pipeline
+from typing import List, Any
 
 
 class PredictionRequest(BaseModel):
@@ -20,40 +21,64 @@ class PredictionRequest(BaseModel):
     hillshade: float
     twi: float
     mrvbf: float
+    bulk_density: float
+
 
 class PredictionResponse(BaseModel):
+    soil_organic_carbon: float
     soil_organic_carbon_stock: float
 
-def transform_to_dataframe(class_model: BaseModel) -> DataFrame:
+
+def transform_to_dataframe(requests: List[PredictionRequest]) -> DataFrame:
     """
-    Input: Soil profile data as JSON
-    Output: Dataframe with the same info
+    Transforms a list of PredictionRequest instances into a DataFrame.
+
+    Args:
+    requests (List[PredictionRequest]): List of prediction requests
+
+    Returns:
+    DataFrame: DataFrame containing the input data for the model
     """
-    dictionary = {key: [value] for key, value in class_model.dict().items()}
+    dictionary = {key: [getattr(req, key) for req in requests] for key in requests[0].dict().keys()}
     df = DataFrame(dictionary)
     return df
 
-def get_prediction(request: PredictionRequest) -> str:
-    """
-    Input: request. PredictionRequest instance used to compute the prediction of the model
-    Output: prediction. Prediction of the model
-    """
 
+def get_prediction(request: PredictionRequest) -> List[Any]:
+    """
+    Generates a prediction using a pre-trained model.
+
+    Args:
+    request (PredictionRequest): Prediction request data
+
+    Returns:
+    List[Any]: List containing the soil organic carbon and soil organic carbon stock
+    """
     try:
-        data_to_predict = transform_to_dataframe(request)
+        features = ['Depth', 'tmax', 'tmin', 'prcp', 'lc', 'clay', 'silt', 'sand', 'dem', 'slope', 'aspect', 'hillshade', 'twi', 'mrvbf']
+        data_to_predict = transform_to_dataframe([request])
         loaded_rf = joblib.load("rf_model.joblib")
-        predict = loaded_rf.predict(data_to_predict)
-        return predict[0]
+        prediction = loaded_rf.predict(data_to_predict[features])
+        soil_organic_carbon = prediction[0]
+        soil_organic_carbon_stock = soil_organic_carbon * request.Depth * request.bulk_density
+        return [soil_organic_carbon, soil_organic_carbon_stock]
     except Exception as e:
-        return -99.0
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 app = FastAPI(docs_url='/')
 
-@app.post('/v1/prediction')
+
+@app.post('/v1/prediction', response_model=PredictionResponse)
 def make_model_prediction(request: PredictionRequest):
     """
-    Input: Prediction request
-    Output: Prediction response.
-    """
+    Endpoint to make predictions using the model.
 
-    return PredictionResponse(soil_organic_carbon_stock=get_prediction(request))
+    Args:
+    request (PredictionRequest): Prediction request data
+
+    Returns:
+    PredictionResponse: Prediction result
+    """
+    prediction = get_prediction(request)
+    return PredictionResponse(soil_organic_carbon=prediction[0], soil_organic_carbon_stock=prediction[1])
