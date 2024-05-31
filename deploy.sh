@@ -12,4 +12,4 @@ pip install -U rsconnect-python
 export REQUESTS_CA_BUNDLE="custom_bundle.crt"
 
 # Deploy without specifying the custom certificate bundle
-rsconnect deploy fastapi --server https://connect.doit.wisc.edu/ --api-key "$RSCONNECT_API_KEY" ./api_socs_forecast/
+rsconnect deploy fastapi --server https://connect.doit.wisc.edu/ --api-key "$RSCONNECT_API_KEY" ./api_socs_forecast/ --insecure
