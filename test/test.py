@@ -1,10 +1,21 @@
+import os
+
 from fastapi.testclient import TestClient
 from api_socs_forecast.main import app
 
 client = TestClient(app)
 
+
+connect_api_key = os.environ("RSCONNECT_API_KEY")
+headers = {
+    "Authorization": f"Key {connect_api_key}",
+    "accept": "application/json",
+    "Content-Type": "application/json"
+  }
+
 def test_null_predictions():
-    response = client.post('/v1/prediction', json={"Depth": 0,
+    response = client.post('/v1/prediction', headers=headers,
+                                            json={"Depth": 0,
                                                   "tmax": 0,
                                                   "tmin": 0,
                                                   "prcp": 0,
@@ -24,7 +35,8 @@ def test_null_predictions():
     assert type(response.json()['diagnostic']) is str
 
 def test_random_prediction():
-    response = client.post('/v1/prediction', json={"Depth": 5,
+    response = client.post('/v1/prediction', headers=headers,
+                                            json={"Depth": 5,
                                                  "tmax": 10.702739716,
                                                  "tmin": 0.5561643839,
                                                  "prcp": 753.0,
