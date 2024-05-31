@@ -68,17 +68,16 @@ def get_prediction(request: PredictionRequest) -> List[Any]:
 
 app = FastAPI(docs_url='/')
 
-
 @app.post('/v1/prediction', response_model=PredictionResponse)
 def make_model_prediction(request: PredictionRequest):
     """
-    Endpoint to make predictions using the model.
+    Endpoint to make predictions on soc by the trained RF and then soc stocks
 
     Args:
-    request (PredictionRequest): Prediction request data
+    the data is a manual input now, in the future the sdp will be estimated based on location and date
 
     Returns:
-    PredictionResponse: Prediction result
+    PredictionResponse: Soil organic carbon estimate (based on RF from JH) and soc stock: soc*BD*depth
     """
     prediction = get_prediction(request)
     return PredictionResponse(soil_organic_carbon=prediction[0], soil_organic_carbon_stock=prediction[1])
