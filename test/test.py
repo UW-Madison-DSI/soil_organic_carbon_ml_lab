@@ -29,7 +29,7 @@ def test_null_predictions():
                                                   "hillshade": 0,
                                                   "twi": 0,
                                                   "mrvbf": 0,
-                                                  "bulk_density": 0})
+                                                  "bulk_density": 0}, verify=False)
 
     assert response.status_code == 200
     assert type(response.json()['diagnostic']) is str
@@ -50,6 +50,6 @@ def test_random_prediction():
                                                  "hillshade": 0.7853578925,
                                                  "twi": 11.223488808,
                                                  "mrvbf": 2.5688176155,
-                                                "bulk_density": 1.88})
+                                                "bulk_density": 1.88}, verify=False)
     assert response.status_code == 200
     assert type(response.json()['diagnostic']) is str
