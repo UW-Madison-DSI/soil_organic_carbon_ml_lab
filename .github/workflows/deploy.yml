@@ -35,9 +35,9 @@ jobs:
         pip install pytest
         pip install httpx  # Dependency for TestClient
 
-        - name: Run tests
-          run: |
-            pytest
+    - name: Run tests
+      run: |
+        pytest test/.py
 
     - name: Set up environment variables
       env:

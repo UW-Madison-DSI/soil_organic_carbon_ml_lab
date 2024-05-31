@@ -102,3 +102,5 @@ custom_file.txt
 # macOS
 .DS_Store
 .idea/
+.idea/
+.DS_Store
