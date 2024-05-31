@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
+from api_socs_forecast.main import app
 
-client = TestClient(api)
+client = TestClient(app)
 
 def test_null_predictions():
     response = client.post('/v1/prediction', json={'Depth': 0,

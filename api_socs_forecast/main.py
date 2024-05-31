@@ -2,7 +2,6 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from pandas import DataFrame
 import joblib
-from sklearn.pipeline import Pipeline
 from typing import List, Any
 
 
