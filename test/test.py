@@ -6,7 +6,7 @@ from api_socs_forecast.main import app
 client = TestClient(app)
 
 
-connect_api_key = os.environ("RSCONNECT_API_KEY")
+connect_api_key = os.environ.get("RSCONNECT_API_KEY")
 headers = {
     "Authorization": f"Key {connect_api_key}",
     "accept": "application/json",
