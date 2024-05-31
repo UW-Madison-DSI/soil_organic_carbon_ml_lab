@@ -1,55 +1,50 @@
 import os
-
+import pytest
 from fastapi.testclient import TestClient
-from api_socs_forecast.main import app
+from main import app, PredictionRequest
 
+# Create a TestClient for our FastAPI app
 client = TestClient(app)
 
+# Test data for a successful prediction
+test_data = {
+    "Depth": 1.0,
+    "tmax": 30.0,
+    "tmin": 15.0,
+    "prcp": 10.0,
+    "lc": 0.5,
+    "clay": 20.0,
+    "silt": 40.0,
+    "sand": 40.0,
+    "dem": 100.0,
+    "slope": 5.0,
+    "aspect": 180.0,
+    "hillshade": 200.0,
+    "twi": 8.0,
+    "mrvbf": 2.0,
+    "bulk_density": 1.3
+}
 
-connect_api_key = os.environ.get("RSCONNECT_API_KEY")
-headers = {
-    "Authorization": f"Key {connect_api_key}",
-    "accept": "application/json",
-    "Content-Type": "application/json"
-  }
-
-def test_null_predictions():
-    response = client.post('/v1/prediction', headers=headers,
-                                            json={"Depth": 0,
-                                                  "tmax": 0,
-                                                  "tmin": 0,
-                                                  "prcp": 0,
-                                                  "lc": 0,
-                                                  "clay": 0,
-                                                  "silt": 0,
-                                                  "sand": 0,
-                                                  "dem": 0,
-                                                  "slope": 0,
-                                                  "aspect": 0,
-                                                  "hillshade": 0,
-                                                  "twi": 0,
-                                                  "mrvbf": 0,
-                                                  "bulk_density": 0}, verify=False)
-
+def test_make_model_prediction():
+    # Test a valid prediction request
+    response = client.post('/v1/prediction', json=test_data)
     assert response.status_code == 200
-    assert type(response.json()['diagnostic']) is str
+    json_response = response.json()
+    assert "soil_organic_carbon" in json_response
+    assert "soil_organic_carbon_stock" in json_response
+    assert isinstance(json_response["soil_organic_carbon"], float)
+    assert isinstance(json_response["soil_organic_carbon_stock"], float)
 
-def test_random_prediction():
-    response = client.post('/v1/prediction', headers=headers,
-                                            json={"Depth": 5,
-                                                 "tmax": 10.702739716,
-                                                 "tmin": 0.5561643839,
-                                                 "prcp": 753.0,
-                                                 "lc": 9.0,
-                                                 "clay": 10.0,
-                                                 "silt": 35.0,
-                                                 "sand": 55.0,
-                                                 "dem": 189,
-                                                 "slope": 5.69661e-05,
-                                                 "aspect": 6.283185482,
-                                                 "hillshade": 0.7853578925,
-                                                 "twi": 11.223488808,
-                                                 "mrvbf": 2.5688176155,
-                                                "bulk_density": 1.88}, verify=False)
-    assert response.status_code == 200
-    assert type(response.json()['diagnostic']) is str
+def test_prediction_request_validation():
+    # Test a prediction request with missing fields
+    incomplete_data = test_data.copy()
+    del incomplete_data['Depth']
+    response = client.post('/v1/prediction', json=incomplete_data)
+    assert response.status_code == 422
+
+def test_prediction_internal_server_error():
+    # Test the prediction endpoint when an exception occurs (e.g., model file not found)
+    response = client.post('/v1/prediction', json=test_data)
+    assert response.status_code == 500
+    assert response.json() == {"detail": "Model file not found"}
+

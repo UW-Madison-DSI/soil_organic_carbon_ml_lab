@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from pandas import DataFrame
 import joblib
+from sklearn.pipeline import Pipeline
 from typing import List, Any
 
 
@@ -70,7 +71,7 @@ app = FastAPI(docs_url='/')
 @app.post('/v1/prediction', response_model=PredictionResponse)
 def make_model_prediction(request: PredictionRequest):
     """
-    Endpoint to make predictions on soc by the trained RF and then soc stocks
+    Endpoint to make predictions on soc and then soc stocks
 
     Args:
     the data is a manual input now, in the future the sdp will be estimated based on location and date
