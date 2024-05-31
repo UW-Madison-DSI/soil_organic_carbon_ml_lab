@@ -32,12 +32,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install fastapi
-        pip install pytest
-        pip install httpx  # Dependency for TestClient
-
-    #- name: Run tests
-    #  run: |
-    #    pytest test/*.py
 
     - name: Set up environment variables
       env:

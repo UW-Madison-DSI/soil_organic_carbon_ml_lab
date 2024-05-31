@@ -60,10 +60,10 @@ def get_prediction(request: PredictionRequest) -> List[Any]:
         loaded_rf = joblib.load("rf_model.joblib")
         prediction = loaded_rf.predict(data_to_predict[features])
         soil_organic_carbon = prediction[0]
-        soil_organic_carbon_stock = soil_organic_carbon * request.Depth * request.bulk_density
+        soil_organic_carbon_stock = soil_organic_carbon * data_to_predict.iloc[0]['Depth'] * data_to_predict.iloc[0]['bulk_density']
         return [soil_organic_carbon, soil_organic_carbon_stock]
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return [-1,-1]
 
 
 app = FastAPI(docs_url='/')
