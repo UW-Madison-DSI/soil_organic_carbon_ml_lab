@@ -37,7 +37,7 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest test/.py
+        pytest test/*.py
 
     - name: Set up environment variables
       env:
