@@ -13,7 +13,5 @@ scipy
 statsmodels
 matplotlib
 seaborn
-pytest
-sklearn
 geemap
 ee
