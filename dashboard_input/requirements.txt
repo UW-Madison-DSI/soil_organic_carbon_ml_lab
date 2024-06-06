@@ -15,3 +15,5 @@ matplotlib
 seaborn
 geemap
 ee
+geopandas
+plotly
