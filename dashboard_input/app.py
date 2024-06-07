@@ -6,17 +6,6 @@ import statsmodels.api as sm
 from sklearn.feature_selection import RFE
 from sklearn.ensemble import RandomForestRegressor
 import streamlit as st
-import geemap.foliumap as geemap
-
-import ee
-
-try:
-    ee.Initialize()
-except Exception as e: # if the initialization didn't work, web authenticate first
-    ee.Authenticate()
-    ee.Initialize(project='ee-moros2')
-
-
 
 
 st.markdown(
