@@ -429,7 +429,7 @@ def main():
     st.title("Soil Organic Carbon and other soil properties")
 
     # Load data
-    data = pd.read_csv('data/merged_CONUS_dem.csv')
+    data = pd.read_csv('merged_CONUS_dem.csv')
     data['date'] = pd.to_datetime(data['year'], format='%Y')
     data['soil_organic_carbon_stock'] = data['soil_organic_carbon']*data['depth_cm']*1
     data = data.set_index('date')
