@@ -429,7 +429,7 @@ def main():
     st.title("Soil Organic Carbon and other soil properties")
 
     # Load data
-    file_path = 'dashboard_input/merged_CONUS_dem.csv'
+    file_path = 'merged_CONUS_dem.csv'
     if os.path.exists(file_path):
         data = pd.read_csv(file_path)
     else:
