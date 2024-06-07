@@ -429,7 +429,12 @@ def main():
     st.title("Soil Organic Carbon and other soil properties")
 
     # Load data
-    data = pd.read_csv('merged_CONUS_dem.csv')
+    file_path = 'dashboard_input/merged_CONUS_dem.csv'
+    if os.path.exists(file_path):
+        data = pd.read_csv(file_path)
+    else:
+        st.write(f"File {file_path} not found.")
+
     data['date'] = pd.to_datetime(data['year'], format='%Y')
     data['soil_organic_carbon_stock'] = data['soil_organic_carbon']*data['depth_cm']*1
     data = data.set_index('date')
