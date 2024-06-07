@@ -235,7 +235,7 @@ def tseries_procedure(data, var):
     return final_data
 
 def histogram_var(data, var):
-    fig = px.histogram(data, x=var, title=f"{var.replace('_',' ').capitalize()} - Histogram")
+    fig = px.histogram(data, x=var, title=f"{var.replace('_',' ').replace('norm','').capitalize()} - Histogram")
     st.plotly_chart(fig)
 
 @st.cache_data
@@ -427,9 +427,7 @@ def search_data():
 
 
 def app():
-    st.title("Data Catalog")
-
-    apps = ["Earth Engine - Search Earth Engine Data Catalog",
+    apps = [#"Earth Engine - Search Earth Engine Data Catalog",
             #"National Land Cover Database (NLCD)",
             "SOC from RF"]
 
