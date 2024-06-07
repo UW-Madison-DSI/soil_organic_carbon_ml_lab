@@ -13,4 +13,5 @@ streamlit
 streamlit-bokeh-events
 streamlit-folium
 streamlit-keplergl
+statsmodels
 tropycal

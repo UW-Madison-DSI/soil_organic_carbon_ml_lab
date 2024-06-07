@@ -1,16 +1,10 @@
 import plotly.express as px
 import geopandas as gpd
-from zipfile import ZipFile
-from io import BytesIO
-import streamlit as st
 import pandas as pd
 import plotly.graph_objs as go
 import statsmodels.api as sm
 from sklearn.feature_selection import RFE
 from sklearn.ensemble import RandomForestRegressor
-from statsmodels.tsa.stattools import adfuller
-import numpy as np
-import ee
 import streamlit as st
 import geemap.foliumap as geemap
 
