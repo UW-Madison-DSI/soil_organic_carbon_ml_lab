@@ -429,13 +429,13 @@ def main():
     st.title("Soil Organic Carbon and other soil properties")
 
     # Load data
-    file_path = 'data/merged_CONUS_dem_probabilistic_temporal.csv'
+    #file_path = 'data/merged_CONUS_dem_probabilistic_temporal.csv'
+    data = pd.read_csv("data/merged_CONUS_dem_probabilistic_temporal.csv")
 
-    if os.path.exists(file_path):
-        data = pd.read_csv(file_path)
+    if len(data)>0:
 
         data['date'] = pd.to_datetime(data['year'], format='%Y')
-        data['soil_organic_carbon_stock'] = data['soil_organic_carbon']*data['depth_cm']*1
+        data['soil_organic_carbon_stock'] = data['soil_organic_carbon']*data['depth_cm']*data['bd_mean']
         data = data.set_index('date')
 
         # Streamlit UI
@@ -444,7 +444,7 @@ def main():
             data = read_shapefile_from_upload(uploaded_file, data)
 
         soil_properties = st.sidebar.radio("Soil Properties",
-                                           (data.columns[9:]), key=2)
+                                           (data.columns[9:]+['soil_organic_carbon']), key=2)
 
         depth_c = st.sidebar.radio("Depth (cm)", ('0-5','5-15','15-30','30-60','60-100','100-200'))
         depth = depth_c.split('-')[-1]
