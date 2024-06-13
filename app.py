@@ -429,31 +429,30 @@ def main():
     st.title("Soil Organic Carbon and other soil properties")
 
     # Load data
-    file_path = '/mount/src/cyberinfraestructure_dsp_forecasting/dashboard_input/merged_CONUS_dem.csv'
+    file_path = 'data/merged_CONUS_dem_probabilistic_temporal.csv'
+
     if os.path.exists(file_path):
         data = pd.read_csv(file_path)
+
+        data['date'] = pd.to_datetime(data['year'], format='%Y')
+        data['soil_organic_carbon_stock'] = data['soil_organic_carbon']*data['depth_cm']*1
+        data = data.set_index('date')
+
+        # Streamlit UI
+        uploaded_file = st.sidebar.file_uploader("Upload AOI *.shp file", type="shp")
+        if uploaded_file is not None:
+            data = read_shapefile_from_upload(uploaded_file, data)
+
+        soil_properties = st.sidebar.radio("Soil Properties",
+                                           (data.columns[9:]), key=2)
+
+        depth_c = st.sidebar.radio("Depth (cm)", ('0-5','5-15','15-30','30-60','60-100','100-200'))
+        depth = depth_c.split('-')[-1]
+        data = data[data['depth_cm']==int(depth)]
+        map(data, soil_properties)
+        histogram_var(data, soil_properties)
     else:
         st.write(f"File {file_path} not found.")
-
-    data['date'] = pd.to_datetime(data['year'], format='%Y')
-    data['soil_organic_carbon_stock'] = data['soil_organic_carbon']*data['depth_cm']*1
-    data = data.set_index('date')
-
-    # Streamlit UI
-    uploaded_file = st.sidebar.file_uploader("Upload AOI *.shp file", type="shp")
-    if uploaded_file is not None:
-        data = read_shapefile_from_upload(uploaded_file, data)
-
-    soil_properties = st.sidebar.radio("Soil Properties",
-                                       ('soil_organic_carbon', 'dem', 'slope_norm', 'aspect_rad',
-                                        'hillshade'), key=2)
-
-    depth_c = st.sidebar.radio("Depth (cm)", ('0-5','5-15','15-30','30-60','60-100','100-200'))
-    depth = depth_c.split('-')[-1]
-    data = data[data['depth_cm']==int(depth)]
-    map(data, soil_properties)
-    histogram_var(data, soil_properties)
-
 
 if __name__ == "__main__":
     app()
