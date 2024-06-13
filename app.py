@@ -25,6 +25,7 @@ st.markdown(
 )
 
 
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 def filter_by_shp(df1,shapefile, label):
 
@@ -430,7 +431,15 @@ def main():
 
     # Load data
     #file_path = 'data/merged_CONUS_dem_probabilistic_temporal.csv'
-    data = pd.read_csv("data/merged_CONUS_dem_probabilistic_temporal.csv")
+    data = os.path.join(HERE, "data/merged_CONUS_dem_probabilistic_temporal.csv")
+
+    @st.cache_data
+    def load_data(nrows):
+        return pd.read_csv("./merged_CONUS_dem_probabilistic_temporal.csv", nrows=nrows)
+
+    data_load_state = st.text("Loading data...")
+    data = load_data(10000)
+    data_load_state.text("")
 
     if len(data)>0:
 
