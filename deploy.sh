@@ -5,4 +5,4 @@ fi
 
 pip install -U rsconnect-python
 
-rsconnect deploy fastapi --server https://connect.doit.wisc.edu/ --api-key "$RSCONNECT_API_KEY" ./api_socs_forecast/ --insecure
+rsconnect deploy streamlit -n sdp_CONUS --entrypoint app.py ./

@@ -12,7 +12,7 @@ Huang et al., 2019
 ## Key Features
 
 This machine learning model predicts socs. So here are the key features of this project:
-
+* Visualization of data https://connect.doit.wisc.edu/soil_dynamic_properties_conus/
 * The model is supported under a backend API built with `FastAPI` through the `POST` method, it asks the soil data as `JSON` format and returns its socs prediction in the same format. The API is served in posit connect: https://connect.doit.wisc.edu/content/36e66cbf-6df9-42d8-9f68-8789f773ccf8 see example below to test out.
 
 * The `Dockerfile` saves all required information to run the model in another machines through a container. Just running the `initializer.sh` is enough to turn the whole system on.
