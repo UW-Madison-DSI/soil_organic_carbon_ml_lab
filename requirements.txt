@@ -14,3 +14,4 @@ seaborn==0.13.2
 statsmodels
 requests==2.32.3
 transformers
+torch

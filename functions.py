@@ -38,7 +38,7 @@ from streamlit_folium import folium_static
 import emoji
 
 from transformers import AutoModelForCausalLM, AutoTokenizer
-
+import torch
 
 
 maptilerkey = st.secrets['MAP_TILER_KEY']
