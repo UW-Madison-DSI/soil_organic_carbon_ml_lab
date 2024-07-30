@@ -434,7 +434,7 @@ def map_layers(img, bounds):
 
     # Add the MapTiler tile layer
     folium.TileLayer(
-        tiles=f"https://api.maptiler.com/maps/topo/{z}/{x}/{y}.png?key={maptilerkey}",
+        tiles="https://api.maptiler.com/maps/topo/{z}/{x}/{y}.png?key="+str(maptilerkey),
         attr='Map data © OpenStreetMap contributors, Imagery © MapTiler',
         name='Map Tiler',
         overlay=False,
