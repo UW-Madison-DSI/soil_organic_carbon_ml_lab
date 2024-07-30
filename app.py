@@ -179,8 +179,9 @@ def soil_dynamic_properties():
             filtered_data0 = filtered_data
 
         # st.write(filtered_data0.columns)
+        fts=sort_values(list(set(features1)))
         soil_properties_c = st.sidebar.selectbox("Soil Properties",
-                                             list(set(features1))
+                                             fts
                                               # 'soil_organic_carbon_predictions','soil_organic_carbon_stocks'
                                               , key=3)
         soil_properties = soil_properties_c.replace(" (observed)", "")
@@ -188,7 +189,6 @@ def soil_dynamic_properties():
         # depth_c = st.radio("Depth (cm)", ('0-5', '5-15', '15-30', '30-60', '60-100', '100-200', 'ALL'))
         if soil_properties in terraincls:
             depth_c1 = depth_c
-            # st.sidebar.radio("Depth (cm)", ('0-5', '5-15', '15-30', '30-60', '60-100', '100-200', 'ALL'), key=1)
             filtered_data1 = filtered_data0
             if 'ALL' not in depth_c1:
                 depth = depth_c1.split('-')[-1]
