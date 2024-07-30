@@ -250,10 +250,11 @@ def load_model():
     return model, tokenizer
 
 
-model, tokenizer = load_model()
+
 
 
 def generate_response(prompt):
+    model, tokenizer = load_model()
     inputs = tokenizer.encode(prompt + tokenizer.eos_token, return_tensors="pt")
     outputs = model.generate(inputs, max_length=500, pad_token_id=tokenizer.eos_token_id)
     response = tokenizer.decode(outputs[0], skip_special_tokens=True)
