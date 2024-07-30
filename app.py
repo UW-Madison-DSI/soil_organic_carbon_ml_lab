@@ -109,15 +109,15 @@ features = ['label','depth_cm', 'min_temperature', 'max_temperature',
             'silt_mean', 'sand_mean','bd_mean', 'dem', 'slope', 'aspect',
             'hillshade', 'om_mean', 'ph_mean']
 @st.cache_data
-def load_data():
+def load_data_conus():
     dta=pd.read_csv("data/final_conus_v2.csv")
     return dta
 
 
-def load_data_conus():
+def load_data_conus1():
     # Use an absolute path
     base_dir = os.path.dirname(__file__)
-    file_path = os.path.join(base_dir, "final_conus_v2.csv")
+    file_path = os.path.join(base_dir, "data/final_conus_v2.csv")
 
     # Check the current working directory and file path
     st.write(f"Current working directory: {os.getcwd()}")
@@ -742,7 +742,7 @@ def my_data():
              )
         )
         select_state = st.sidebar.selectbox("State", states_list, key=4)
-        states = gpd.read_file('states_shape/States_shapefile.shp')
+        states = gpd.read_file('data/states_shape/States_shapefile.shp')
         if select_state is not None and select_state != 'ALL':
             gdf = gpd.GeoDataFrame(filtered_data,
                                    geometry=gpd.points_from_xy(filtered_data.longitude, filtered_data.latitude))
@@ -808,9 +808,9 @@ def soc_prediction():
 def login():
     password = st.text_input("Password", type="password")
     if st.button("Login"):
-        if password == "$jhlab2024$":  # Replace with secure password storage
+        if password == 'a':#"$jhlab2024$":  # Replace with secure password storage
             st.session_state.authenticated = True
-            st.query_params(rerun=True)# Rerun the app to reflect the login state
+            #st.query_params.clear() # Rerun the app to reflect the login state
         else:
             st.error("Incorrect password")
 
@@ -818,13 +818,7 @@ def main():
     #st.write("# Soil Organic Carbon Tool! 👋")
 
     st.sidebar.title("Functionalities")
-    directory = "/mount/src/cyberinfraestructure_dsp_forecasting/data"
-    files = os.listdir(directory)
-    st.write(f"Files in directory '{directory}':")
 
-    # Loop through the list and print each file
-    for file in files:
-        st.write(file)
 
     sidebar_object = st.sidebar.radio('Please choose', ("SOC Assistant",'My Data'), key=100)
 
