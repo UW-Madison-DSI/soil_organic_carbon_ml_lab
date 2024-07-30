@@ -37,7 +37,7 @@ import streamlit.components.v1 as components
 from streamlit_folium import folium_static
 
 import emoji
-
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from functions import *
 
