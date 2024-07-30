@@ -13,7 +13,7 @@ import numpy as np
 import plotly.graph_objects as go
 import streamlit.components.v1 as components
 import branca.colormap as cm
-
+import emoji
 import os.path
 import rasterio
 from rasterio import warp
@@ -36,6 +36,12 @@ import folium
 #from StringIO import io
 import io
 import pandas as pd
+import utils as utl
+
+def local_css(file_name):
+    with open(file_name) as f:
+        css = f.read()
+    st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
 
 st.markdown(
@@ -192,7 +198,7 @@ def trend_time_series(dframe, depth_c, select_state):
             plt.legend()
             plt.xlabel('Year')
             plt.ylabel('Soil Organic Carbon')
-            plt.title('Soil Organic Carbon Time Series with Forecast and Confidence Intervals')
+            plt.title('Median Soil Organic Carbon across the years')
             st.pyplot(plt)
 
         df = df.groupby(by='year').agg({'soil_organic_carbon': 'median'})
@@ -212,18 +218,18 @@ def trend_time_series(dframe, depth_c, select_state):
         fig = go.Figure()
 
         # Add Sales line
-        fig.add_trace(go.Scatter(x=df['year'], y=df['soil_organic_carbon'], mode='lines+markers', name='SOC_observations'))
+        fig.add_trace(go.Scatter(x=df['year'], y=df['soil_organic_carbon'], mode='lines+markers', name='Obs'))
         # Add Trend line
         #fig.add_trace(go.Scatter(x=df['year'], y=df['DESAdd'], mode='lines', name='SOC_frcast_DESAdd'))
-        fig.add_trace(go.Scatter(x=df['year'], y=df['EWMA3'], mode='lines', name='SOC_frcast_EWMA3'))
-        fig.add_trace(go.Scatter(x=df['year'], y=df['SES3'], mode='lines', name='SOC_frcast_SES3'))
+        fig.add_trace(go.Scatter(x=df['year'], y=df['EWMA3'], mode='lines', name='EWMA3'))
+        fig.add_trace(go.Scatter(x=df['year'], y=df['SES3'], mode='lines', name='SES3'))
         # Update layout for autoscaling x-axis
         fig.update_layout(
-            title=f'Time series forecasting and observations of SOC over the Time at {depth_c} cm depth',
+            title=f'Median Soil organic carbon trend {depth_c.split("-")[-1]} cm depth',
             xaxis_title='year',
             yaxis_title='Soil Organic Carbon',
             xaxis=dict(
-                rangeslider=dict(visible=True),
+                rangeslider=dict(visible=False),
                 autorange=True
             )
         )
@@ -234,8 +240,6 @@ def trend_time_series(dframe, depth_c, select_state):
 
 def plot_model_comparisons(data, features):
     try:
-
-
         # Load your dataset
         # df = pd.read_csv('path_to_your_data.csv')
         X = data.drop('soil_organic_carbon', axis=1)  # replace 'target_column' with the name of your target variable
@@ -681,8 +685,16 @@ def my_data():
 
     st.title("Soil Organic Carbon Tool.")
     data = load_data_conus()
+    map_style = st.sidebar.selectbox(
+        'Select the map style :world_map:',
+        ('OpenStreetMap',  # 'CartoDB Positron', 'Stamen Terrain',
+         'USGS Imagery'  # , 'Canada Weather Radar'
+         )
+    )
+    select_state = st.sidebar.selectbox("State :round_pushpin:", states_list, key=4)
     #pd.read_csv("data/final_conus_v2.csv")
-    depth_c = st.sidebar.radio("Depth (cm)", ('0-5', '5-15', '15-30', '30-60', '60-100', '100-200', 'ALL'), key=2)
+    depthslist=['0-5', '5-15', '15-30', '30-60', '60-100', '100-200','ALL']
+    depth_c = st.sidebar.selectbox("Soil Depth (cm)", depthslist, key=2)
 
     uploaded_file = None
     # st.sidebar.file_uploader("Test my own data (CSV file)", type=['csv'])
@@ -725,8 +737,8 @@ def my_data():
     # st.write(len(data))
     earliest_year = data["year"].min()
     latest_year = data["year"].max()
-    min_year, max_year = st.sidebar.slider(
-        "Year Range",
+    min_year, max_year = st.slider(
+        "Year Range of Data",
         min_value=int(earliest_year),
         max_value=2020,
         value=[int(earliest_year), int(latest_year)],
@@ -736,13 +748,8 @@ def my_data():
     filtered_data = filtered_data[filtered_data["year"] <= max_year]
 
     try:
-        map_style = st.sidebar.selectbox(
-            'Select the map style:',
-            ('OpenStreetMap',  # 'CartoDB Positron', 'Stamen Terrain',
-             'USGS Imagery'  # , 'Canada Weather Radar'
-             )
-        )
-        select_state = st.sidebar.selectbox("State", states_list, key=4)
+
+
         states = gpd.read_file('data/states_shape/States_shapefile.shp')
         if select_state is not None and select_state != 'ALL':
             gdf = gpd.GeoDataFrame(filtered_data,
@@ -754,10 +761,10 @@ def my_data():
             filtered_data0 = filtered_data
 
         # st.write(filtered_data0.columns)
-        soil_properties_c = st.sidebar.radio("Soil Properties",
-                                             (features1
+        soil_properties_c = st.sidebar.selectbox("Soil Properties",
+                                             list(set(features1))
                                               # 'soil_organic_carbon_predictions','soil_organic_carbon_stocks'
-                                              ), key=3)
+                                              , key=3)
         soil_properties = soil_properties_c.replace(" (observed)", "")
         terraincls = ['bd_mean', 'clay_mean', 'om_mean', 'ph_mean', 'sand_mean', 'silt_mean']
         # depth_c = st.radio("Depth (cm)", ('0-5', '5-15', '15-30', '30-60', '60-100', '100-200', 'ALL'))
@@ -775,9 +782,12 @@ def my_data():
         st.write("Total sample data: ", len(filtered_data1))
 
         map1(filtered_data1, soil_properties, map_style)
-        trend_time_series(filtered_data0, depth_c, 'ALL')
 
-        histogram_var(filtered_data1, soil_properties, label)
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            trend_time_series(filtered_data0, depth_c, 'ALL')
+        with col2:
+            histogram_var(filtered_data1, soil_properties, label)
 
     except Exception as e:
         st.write(f"{e}")
@@ -817,7 +827,7 @@ def login():
 
 def main():
     #st.write("# Soil Organic Carbon Tool! 👋")
-
+    local_css("frontend/css/streamlit.css")
     st.sidebar.title("Functionalities")
 
 

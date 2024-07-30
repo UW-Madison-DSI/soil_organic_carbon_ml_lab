@@ -6,6 +6,7 @@ streamlit_folium
 plotly
 rasterio
 geopy
+emoji
 shapely
 geopandas==1.0.1
 pandas==2.2.2
