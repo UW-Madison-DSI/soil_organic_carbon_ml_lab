@@ -8,6 +8,7 @@ rasterio
 geopy
 emoji==2.12.1
 shapely
+openai=0.28.0
 geopandas==1.0.1
 pandas==2.2.2
 seaborn==0.13.2
