@@ -7,9 +7,9 @@ echo "Starting deployment script..."
 pip install -U rsconnect-python
 
 echo "Configuring Posit Connect server..."
-rsconnect add -i --insecure --server https://connect.doit.wisc.edu --name sdp_CONUS --api-key $POSIT_API_KEY
+rsconnect add -i --insecure --server https://connect.doit.wisc.edu --name sdp_CONUS2 --api-key $POSIT_API_KEY
 
 echo "Deploying the Streamlit app..."
-rsconnect deploy streamlit --insecure -n sdp_CONUS --entrypoint app.py .
+rsconnect deploy streamlit --insecure -n sdp_CONUS2 --entrypoint app.py .
 
 echo "Deployment script completed successfully."
