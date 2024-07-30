@@ -1,7 +1,8 @@
 altair < 5
 altair
-streamlit
 folium==0.13.0
+streamlit==1.28.2
+python-dotenv
 geopandas
 plotly
 streamlit-bokeh-events
