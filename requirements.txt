@@ -3,6 +3,8 @@ wheel==0.36.2
 matplotlib
 streamlit
 numpy
+geopandas
+raster
 pandas
 python-dateutil
 pytz
