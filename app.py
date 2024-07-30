@@ -791,7 +791,7 @@ def login():
     if st.button("Login"):
         if password == "$jhlab2024$":  # Replace with secure password storage
             st.session_state.authenticated = True
-            st.experimental_rerun()  # Rerun the app to reflect the login state
+            st.experimental_set_query_params(rerun=True)# Rerun the app to reflect the login state
         else:
             st.error("Incorrect password")
 
