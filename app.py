@@ -236,7 +236,7 @@ def soc_prediction():
 def login():
     password = st.text_input("Password", type="password")
     if st.button("Login"):
-        if password == "$jhlab2024$":
+        if password == st.secrets['PASSW']:
             st.session_state.authenticated = True
         else:
             st.error("Incorrect password")
