@@ -9,10 +9,10 @@ echo "Installing rsconnect-python..."
 pip install -U rsconnect-python
 
 echo "Configuring Posit Connect server..."
-rsconnect add --server https://connect.doit.wisc.edu --name sdp_CONUS --api-key $POSIT_API_KEY
+rsconnect add --server https://connect.doit.wisc.edu --name sdp_CONUS --api-key $POSIT_API_KEY --no-verify
 
 # Deploy the Streamlit app with the specified name and entry point
 echo "Deploying the Streamlit app..."
-rsconnect deploy streamlit --name sdp_CONUS --entrypoint app.py .
+rsconnect deploy streamlit --name sdp_CONUS --entrypoint app.py . --no-verify
 
 echo "Deployment script completed successfully."
