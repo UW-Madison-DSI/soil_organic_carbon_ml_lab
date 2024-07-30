@@ -1,7 +1,6 @@
 matplotlib
 streamlit
 numpy
-gdal==3.4.1
 geopandas
 raster
 pandas
