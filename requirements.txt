@@ -13,3 +13,4 @@ plotly-express
 sidetable
 streamlit <= 1.11
 streamlit-extras
+rasterio
