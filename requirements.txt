@@ -1,17 +1,11 @@
-altair < 5
-altair
-folium==0.13.0
-streamlit
-python-dotenv
-geopandas
-plotly
-streamlit-bokeh-events
-streamlit-folium
-statsmodels
-joblib
-pandas
-plotly-express
-sidetable
-streamlit <= 1.11
-streamlit-extras
-rasterio
+matplotlib
+streamlit==1.28.2
+numpy==1.24.0
+packaging==22.0
+pandas==1.5.2
+pyparsing==3.0.9
+python-dateutil==2.8.2
+pytz==2022.7
+scipy==1.9.3
+seaborn==0.12.1
+requests
