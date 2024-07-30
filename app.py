@@ -179,9 +179,9 @@ def soil_dynamic_properties():
             filtered_data0 = filtered_data
 
         # st.write(filtered_data0.columns)
-        fts=features1.sort()
+
         soil_properties_c = st.sidebar.selectbox("Soil Properties",
-                                             fts
+                                             features1.sort()
                                               # 'soil_organic_carbon_predictions','soil_organic_carbon_stocks'
                                               , key=3)
         soil_properties = soil_properties_c.replace(" (observed)", "")
