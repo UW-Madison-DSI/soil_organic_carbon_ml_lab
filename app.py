@@ -274,8 +274,9 @@ def dialog():
 
     if st.button("Send"):
         # Generate response
-        response = generate_response(user_input)
-        st.text_area("Dialog-GPT:", value=response, height=200, max_chars=None)
+        st.write("In progress")
+        #response = generate_response(user_input)
+        #st.text_area("Dialog-GPT:", value=response, height=200, max_chars=None)
 
 
 def main1():
@@ -286,7 +287,7 @@ def main1():
 
     if sidebar_object == 'SOC Assistant':
         soc_prediction()
-        dialog()
+        #dialog()
 
     else:
         if 'authenticated' not in st.session_state:
