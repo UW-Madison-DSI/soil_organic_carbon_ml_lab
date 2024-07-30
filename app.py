@@ -149,6 +149,7 @@ def soil_dynamic_properties():
                      'total_precipitation', 'min_temperature', 'mean_temperature', 'max_temperature',
                      'dem', 'slope', 'aspect', 'hillshade', 'bd_mean', 'clay_mean', 'om_mean', 'ph_mean',
                      'sand_mean', 'silt_mean', 'soil_organic_carbon', 'soil_organic_carbon_stocks', 'label']
+        features1.sort()
 
     data['date'] = pd.to_datetime(data['year'], format='%Y')
 
@@ -181,7 +182,7 @@ def soil_dynamic_properties():
         # st.write(filtered_data0.columns)
 
         soil_properties_c = st.sidebar.selectbox("Soil Properties",
-                                             features1.sort()
+                                             features1
                                               # 'soil_organic_carbon_predictions','soil_organic_carbon_stocks'
                                               , key=3)
         soil_properties = soil_properties_c.replace(" (observed)", "")
