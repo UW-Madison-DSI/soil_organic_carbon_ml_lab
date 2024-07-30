@@ -113,6 +113,24 @@ def load_data():
     dta=pd.read_csv("data/final_conus_v2.csv")
     return dta
 
+
+def load_data_conus():
+    # Use an absolute path
+    base_dir = os.path.dirname(__file__)
+    file_path = os.path.join(base_dir, "data", "final_conus_v2.csv")
+
+    # Check the current working directory and file path
+    st.write(f"Current working directory: {os.getcwd()}")
+    st.write(f"Loading data from: {file_path}")
+
+    if not os.path.exists(file_path):
+        st.error(f"File not found: {file_path}")
+        return None
+
+    # Load the data
+    dta = pd.read_csv(file_path)
+    return dta
+
 def trend_time_series(dframe, depth_c, select_state):
     """
 
@@ -661,7 +679,8 @@ def my_data():
     HERE = os.path.dirname(os.path.abspath(__file__))
 
     st.title("Soil Organic Carbon Tool.")
-    data = pd.read_csv("data/final_conus_v2.csv")
+    data = load_data_conus()
+    #pd.read_csv("data/final_conus_v2.csv")
     depth_c = st.sidebar.radio("Depth (cm)", ('0-5', '5-15', '15-30', '30-60', '60-100', '100-200', 'ALL'), key=2)
 
     uploaded_file = None
@@ -690,7 +709,7 @@ def my_data():
             st.error(e)
     else:
         data_load_state = st.text("Loading data...")
-        data = load_data()
+        data = load_data_conus()
         data_load_state.text("")
         data['soil_organic_carbon_stocks'] = data['soil_organic_carbon'] * data['depth_cm'] * data['bd_mean']
         features1 = ['land_cover', 'land_cover_class', 'land_use', 'land_use_class',
