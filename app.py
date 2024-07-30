@@ -36,7 +36,6 @@ import folium
 #from StringIO import io
 import io
 import pandas as pd
-import utils as utl
 
 def local_css(file_name):
     with open(file_name) as f:
