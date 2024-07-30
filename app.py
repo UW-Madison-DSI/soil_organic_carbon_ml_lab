@@ -110,7 +110,7 @@ features = ['label','depth_cm', 'min_temperature', 'max_temperature',
             'hillshade', 'om_mean', 'ph_mean']
 @st.cache_data
 def load_data():
-    dta=pd.read_csv("./data/final_conus_v2.csv")
+    dta=pd.read_csv("data/final_conus_v2.csv")
     return dta
 
 def trend_time_series(dframe, depth_c, select_state):
@@ -661,7 +661,7 @@ def my_data():
     HERE = os.path.dirname(os.path.abspath(__file__))
 
     st.title("Soil Organic Carbon Tool.")
-    DATA = os.path.join(HERE, "data/final_conus_v2.csv")
+    data = pd.read_csv("data/final_conus_v2.csv")
     depth_c = st.sidebar.radio("Depth (cm)", ('0-5', '5-15', '15-30', '30-60', '60-100', '100-200', 'ALL'), key=2)
 
     uploaded_file = None
