@@ -4,6 +4,8 @@ __pycache__/
 *$py.class
 cache/
 cache
+.idea/
+.idea
 
 # Distribution / packaging
 .Python
