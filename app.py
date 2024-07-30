@@ -110,14 +110,14 @@ features = ['label','depth_cm', 'min_temperature', 'max_temperature',
             'hillshade', 'om_mean', 'ph_mean']
 @st.cache_data
 def load_data():
-    dta=pd.read_csv("data/final_conus_v2.csv")
+    dta=pd.read_csv("final_conus_v2.csv")
     return dta
 
 
 def load_data_conus():
     # Use an absolute path
     base_dir = os.path.dirname(__file__)
-    file_path = os.path.join(base_dir, "data", "final_conus_v2.csv")
+    file_path = os.path.join(base_dir, "final_conus_v2.csv")
 
     # Check the current working directory and file path
     st.write(f"Current working directory: {os.getcwd()}")
