@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.10.8'
+          python-version: '3.x'
 
       - name: Install dependencies
         run: |
@@ -27,4 +27,6 @@ jobs:
       - name: Deploy to Posit Connect
         env:
           POSIT_API_KEY: ${{ secrets.POSIT_API_KEY }}
-        run: ./scripts/deploy_wisc.sh
+        run: |
+          chmod +x ./scripts/deploy_wisc.sh
+          ./scripts/deploy_wisc.sh

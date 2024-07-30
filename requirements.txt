@@ -1,5 +1,5 @@
 setuptools==57.4.0
-wheel==0.43.0
+wheel==0.36.2
 matplotlib
 streamlit
 numpy
