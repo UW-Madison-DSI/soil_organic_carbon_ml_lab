@@ -2,6 +2,7 @@ streamlit==1.37.0
 matplotlib==3.9.1
 numpy==2.0.1
 folium
+streamlit_folium
 plotly
 rasterio
 geopandas==1.0.1
