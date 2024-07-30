@@ -110,7 +110,8 @@ features = ['label','depth_cm', 'min_temperature', 'max_temperature',
             'hillshade', 'om_mean', 'ph_mean']
 @st.cache_data
 def load_data_conus():
-    dta=pd.read_csv("data/final_conus_v2.csv")
+    dta = pd.read_parquet('data/final_conus_v2.parquet', engine='pyarrow')
+    #pd.read_csv("data/final_conus_v2.csv")
     return dta
 
 
