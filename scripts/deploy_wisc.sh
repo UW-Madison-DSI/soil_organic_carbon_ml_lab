@@ -2,11 +2,14 @@
 
 set -e
 
+echo "Starting deployment script..."
+
 # Install rsconnect-python
+echo "Installing rsconnect-python..."
 pip install -U rsconnect-python
 
-# Add Posit Connect server
-rsconnect add -i --server https://connect.doit.wisc.edu --name sdp_forecasting --api-key $POSIT_API_KEY
-
 # Deploy the Streamlit app
-rsconnect deploy streamlit -n wisc --entrypoint app.py .
+echo "Deploying the Streamlit app..."
+rsconnect deploy streamlit --server https://connect.doit.wisc.edu --api-key $POSIT_API_KEY ./
+
+echo "Deployment script completed successfully."
