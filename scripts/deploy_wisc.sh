@@ -10,6 +10,6 @@ pip install -U rsconnect-python
 
 # Deploy the Streamlit app
 echo "Deploying the Streamlit app..."
-rsconnect deploy streamlit --server https://connect.doit.wisc.edu --api-key $POSIT_API_KEY ./
+rsconnect deploy streamlit --server https://connect.doit.wisc.edu --name sdp_CONUS --api-key $POSIT_API_KEY --entrypoint app.py .
 
 echo "Deployment script completed successfully."

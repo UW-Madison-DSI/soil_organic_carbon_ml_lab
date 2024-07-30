@@ -6,7 +6,7 @@ cache/
 cache
 .idea/
 .idea
-
+venv
 # Distribution / packaging
 .Python
 build/
