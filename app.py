@@ -810,7 +810,7 @@ def login():
     if st.button("Login"):
         if password == "$jhlab2024$":  # Replace with secure password storage
             st.session_state.authenticated = True
-            st.experimental_set_query_params(rerun=True)# Rerun the app to reflect the login state
+            st.query_params(rerun=True)# Rerun the app to reflect the login state
         else:
             st.error("Incorrect password")
 
@@ -818,6 +818,14 @@ def main():
     #st.write("# Soil Organic Carbon Tool! 👋")
 
     st.sidebar.title("Functionalities")
+    directory = "/mount/src/cyberinfraestructure_dsp_forecasting"
+    files = os.listdir(directory)
+    st.write(f"Files in directory '{directory}':")
+
+    # Loop through the list and print each file
+    for file in files:
+        st.write(file)
+
     sidebar_object = st.sidebar.radio('Please choose', ("SOC Assistant",'My Data'), key=100)
 
     if sidebar_object == 'SOC Assistant':
