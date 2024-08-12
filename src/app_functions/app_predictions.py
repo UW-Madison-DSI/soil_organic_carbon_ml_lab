@@ -20,6 +20,13 @@ def load_data_conus():
     dta = pd.read_parquet('data/sample_soc_observations/final_conus_v2.parquet', engine='pyarrow')
     return dta
 
+def histogram_var(data, var, label):
+    if label is True:
+        plot_model_comparisons(data, features)
+
+    fig = px.histogram(data, x=var, title=f"{var.replace('_',' ').replace('norm','').replace('mean','').replace('om','Organic matter').replace('bd','Bulk density').capitalize()} - Distribution")
+    st.plotly_chart(fig)
+
 #map=map22(tmp_path)
 #folium_static(map)
 #upload1()
