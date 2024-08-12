@@ -1,5 +1,5 @@
 .DS_Store
-
+.idea/
 .idea/.gitignore
 .idea/cyberinfraestructure_dsp_forecasting.iml
 .idea/inspectionProfiles/Project_Default.xml
