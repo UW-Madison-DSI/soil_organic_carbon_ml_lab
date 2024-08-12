@@ -83,6 +83,12 @@ def map_plot(data):
         original_data_marker=dict(size=4, opacity=0.6, color="black"),
 
     )
+    fig.update_traces(
+        hovertemplate="<b>Land Cover</b>: %{customdata[0]}<br>" +
+                      "<b>Land Use</b>: %{customdata[1]}<br>" +
+                      "<extra></extra>",
+        customdata=data[['land_cover_class','land_use_class']].values
+    )
 
     fig.update_layout(mapbox_style="open-street-map")
     # Display the Plotly figure in Streamlit
@@ -101,10 +107,6 @@ def soc_prediction(lat, lon, myzone):
     if myzone:
         df = filter_within_radius(df, lat, lon, 2)
         map_plot(df)
-        a = df.groupby(['land_use_class', 'land_use'])['soil_id'].count().reset_index()
-        dictdf = a[['land_use_class', 'land_use']].to_dict('records')
-        st.write("Correspondence")
-        st.write(dictdf)
 
     else:
         # Create the main scatter mapbox plot
@@ -114,7 +116,7 @@ def soc_prediction(lat, lon, myzone):
             lon="longitude",
             color='land_use_class',
             hover_data=['land_use_class', 'land_cover_class'],
-            color_continuous_scale=px.colors.sequential.Rainbow,
+            color_continuous_scale=px.colors.sequential.Inferno_r,
             zoom=zoom,
             center=center,
             height=500,
@@ -132,8 +134,6 @@ def soc_prediction(lat, lon, myzone):
 
         # Display the plot in Streamlit
         st.plotly_chart(fig)
-
-    histogram_var(df, 'land_use_class','ok')
 
 
 def map_layers_prediction():
