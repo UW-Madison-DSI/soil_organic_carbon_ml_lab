@@ -62,6 +62,32 @@ def filter_within_radius(df, lat_point, lon_point, radius_km):
 
     return result_df
 
+
+def map_plot(data):
+    import streamlit as st
+    import plotly.express as px
+    import plotly.figure_factory as ff
+
+    # Create a hexbin map with Plotly
+    fig = ff.create_hexbin_mapbox(
+        data_frame=data,
+        lat="latitude",
+        lon="longitude",
+        nx_hexagon=2,
+        opacity=.3,
+        labels={"color": "Land Cover"},
+        color="land_use",
+        agg_func=np.mean,
+        color_continuous_scale="Viridis",
+        show_original_data=True,
+        original_data_marker=dict(size=4, opacity=0.6, color="black"),
+
+    )
+
+    fig.update_layout(mapbox_style="open-street-map")
+    # Display the Plotly figure in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
+
 def soc_prediction(lat, lon, myzone):
 
     df = pd.read_parquet('data/grid2018/lulc_2018_wi.parquet')
@@ -74,34 +100,40 @@ def soc_prediction(lat, lon, myzone):
 
     if myzone:
         df = filter_within_radius(df, lat, lon, 2)
+        map_plot(df)
+        a = df.groupby(['land_use_class', 'land_use'])['soil_id'].count().reset_index()
+        dictdf = a[['land_use_class', 'land_use']].to_dict('records')
+        st.write("Correspondence")
+        st.write(dictdf)
 
-    # Create the main scatter mapbox plot
-    fig = px.scatter_mapbox(
-        df,
-        lat="latitude",
-        lon="longitude",
-        color='land_use_class',
-        hover_data=['land_use_class'],
-        color_continuous_scale=px.colors.sequential.Rainbow,
-        zoom=zoom,
-        center=center,
-        height=500,
-        mapbox_style="open-street-map"  # Ensure markers are visible
-    )
-
-    # Update layout to ensure map settings
-    fig.update_layout(
-        mapbox=dict(
-            style="open-street-map",  # Use a style that supports markers
-            center=dict(lat=center['lat'], lon=center['lon']),
-            zoom=zoom
+    else:
+        # Create the main scatter mapbox plot
+        fig = px.scatter_mapbox(
+            df,
+            lat="latitude",
+            lon="longitude",
+            color='land_use_class',
+            hover_data=['land_use_class', 'land_cover_class'],
+            color_continuous_scale=px.colors.sequential.Rainbow,
+            zoom=zoom,
+            center=center,
+            height=500,
+            mapbox_style="open-street-map"  # Ensure markers are visible
         )
-    )
 
-    # Display the plot in Streamlit
-    st.plotly_chart(fig)
+        # Update layout to ensure map settings
+        fig.update_layout(
+            mapbox=dict(
+                style="open-street-map",  # Use a style that supports markers
+                center=dict(lat=center['lat'], lon=center['lon']),
+                zoom=zoom
+            )
+        )
 
-    histogram_var(df, 'land_cover_class','ok')
+        # Display the plot in Streamlit
+        st.plotly_chart(fig)
+
+    histogram_var(df, 'land_use_class','ok')
 
 
 def map_layers_prediction():
