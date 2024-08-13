@@ -197,17 +197,17 @@ def observed_soil_dynamic_properties():
         else:
             filtered_data1 = filtered_data0[filtered_data0['depth_cm'] == 5]
 
-        st.dataframe(filtered_data1)
         st.write("Total sample data: ", len(filtered_data1))
         map_observations(filtered_data1, soil_properties, map_style)
-        #col1, col2 = st.columns([3, 1])
-        #with col1:
-        #trend_time_series(filtered_data0, depth_c, 'ALL')
-        fig, ax = plt.subplots()
-        sns.lineplot(data=filtered_data0, x="year", y="soil_organic_carbon", errorbar=("se", 2), ax=ax)
-        st.pyplot(fig)
-        #with col2:
-        #    histogram_var(filtered_data1, soil_properties, label)
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            trend_time_series(filtered_data0, depth_c, 'ALL')
+        with col2:
+            histogram_var(filtered_data1, soil_properties, label)
+
+        #fig, ax = plt.subplots()
+        #sns.lineplot(data=filtered_data0, x="year", y="soil_organic_carbon", errorbar=("se", 2), ax=ax)
+        #st.pyplot(fig)
 
     except Exception as e:
         st.write(f"----{e}")
