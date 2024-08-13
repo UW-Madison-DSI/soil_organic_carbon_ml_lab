@@ -47,9 +47,6 @@ def filter_within_radius(df, lat_point, lon_point, radius_km):
 
     return result_df
 
-#map=map22(tmp_path)
-#folium_static(map)
-#upload1()
 
 def map_plot(data):
     '''
@@ -90,13 +87,17 @@ def soc_prediction(lat, lon, km_filter):
     :return:
     '''
 
-    df = pd.read_parquet('data/grid2018/lulc_2018_wi.parquet')
+    year = st.selectbox("Select the year",[1990,2018],key=101)
+
+    df = pd.read_parquet('data/grid1990/lulc_1990_wi.parquet')
+    if year == 2018:
+        df = pd.read_parquet('data/grid2018/lulc_2018_wi.parquet')
 
     # Define zoom and center based on whether lat is provided
     if lat is None:
-        zoom, center = 5.7, {"lat": 44.723802, "lon": -89.961530}
+        zoom, center = 6, {"lat": 44.723802, "lon": -89.961530}
     else:
-        zoom, center = 12, {"lat": lat, "lon": lon}
+        zoom, center = 10.5, {"lat": lat, "lon": lon}
 
     if km_filter:
         df = filter_within_radius(df, lat, lon, km_filter)
@@ -125,7 +126,6 @@ def soc_prediction(lat, lon, km_filter):
                 zoom=zoom
             )
         )
-
         # Display the plot in Streamlit
         st.plotly_chart(fig)
 
@@ -256,3 +256,8 @@ def layers_deprec(lat, lng):
     ).add_to(m)
 
     folium_static(m)
+
+
+#map=map22(tmp_path)
+#folium_static(map)
+#upload1()
