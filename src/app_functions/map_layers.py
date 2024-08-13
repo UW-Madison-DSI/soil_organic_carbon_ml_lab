@@ -190,7 +190,6 @@ def create_map_with_geotiff(geotiff_path):
 
 def get_location(address):
     API_KEY = st.secrets["API_KEY"]
-    #'pk.eyJ1IjoibW9yb3MyIiwiYSI6ImNsemVoZWE4aDB4ZnEycXEzeDJwMXhrM2wifQ.lxoXo0WHZ1x_eh-AaVXRiQ'
     url = f"https://api.mapbox.com/geocoding/v5/mapbox.places/{address}.json?access_token={API_KEY}"
     response = requests.get(url)
     if response.status_code == 200:
