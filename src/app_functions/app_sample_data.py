@@ -203,7 +203,7 @@ def observed_soil_dynamic_properties():
         with col1:
             trend_time_series(filtered_data0, depth_c, 'ALL')
         with col2:
-            histogram_var(filtered_data1, soil_properties, label)
+            histogram_var(filtered_data1, soil_properties)
 
         #fig, ax = plt.subplots()
         #sns.lineplot(data=filtered_data0, x="year", y="soil_organic_carbon", errorbar=("se", 2), ax=ax)

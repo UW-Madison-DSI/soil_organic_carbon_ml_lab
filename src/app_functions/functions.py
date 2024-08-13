@@ -135,16 +135,13 @@ def trend_time_series(dframe, depth_c, select_state):
         st.error(e)
 
 
-def histogram_var(data, var, label):
+def histogram_var(data, var):
     '''
 
     :param data:
     :param var:
-    :param label:
     :return:
     '''
-    if label is True:
-        plot_model_comparisons(data, features)
 
     fig = px.histogram(data, x=var, title=f"{var.replace('_',' ').replace('norm','').replace('mean','').replace('om','Organic matter').replace('bd','Bulk density').capitalize()} - Distribution")
     st.plotly_chart(fig)
