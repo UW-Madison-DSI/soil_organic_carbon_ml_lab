@@ -74,3 +74,41 @@ def dialog():
         st.write("In progress")
         #response = generate_response(user_input)
         st.text_area("Dialog-GPT:", value='In progress', height=200, max_chars=None)
+
+# Function to get context from GPT-3.5 using the new API
+def get_context_from_model(question, context):
+    qa_pipeline = pipeline("question-answering", model="distilbert-base-uncased-distilled-squad")
+    response = qa_pipeline(question=question, context=context)
+    return response['answer']
+
+
+# Main function of the application
+def chat_contextualized():
+    #st.write("Context Retriever with Transformers")
+
+    parquet_file_path = '../../data/sample_soc_observations/final_conus_v2.parquet'
+
+    # Load and preprocess the data
+    df = load_data(parquet_file_path)
+    texts = preprocess_data(df)
+
+    # Combine all texts to create a single context
+    context = " ".join(texts[:1000])  # You might need to adjust this depending on your context size
+
+    # Predefined questions
+    questions = [
+        "What is the average soil organic carbon content in the dataset?",
+        "Which region has the highest soil organic carbon content?",
+        "How does the soil organic carbon content vary across different regions?"
+    ]
+
+    selected_question = st.selectbox("Select a question", questions)
+
+    if st.button("Get Answer"):
+        if selected_question:
+            # Get the answer from the model
+            answer = get_context_from_model(selected_question, context)
+            st.write("Answer:")
+            st.write(answer)
+        else:
+            st.error("Please select a question.")

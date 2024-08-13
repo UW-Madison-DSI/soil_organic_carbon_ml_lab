@@ -22,7 +22,6 @@ def main():
     local_css("frontend/css/streamlit.css")
     st.sidebar.title("Functionalities")
 
-
     sidebar_object = st.sidebar.radio('Please choose the option', ("SOC Assistant",'SOC Observations'), key=100)
 
     if sidebar_object == 'SOC Assistant':

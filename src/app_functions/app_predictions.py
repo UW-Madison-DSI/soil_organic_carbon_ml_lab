@@ -1,14 +1,9 @@
 import streamlit as st
-import numpy as np
-import pandas as pd
-import geopandas as gpd
-import matplotlib
-import matplotlib.pyplot as plt
-from matplotlib import cm
 import plotly.express as px
-import plotly.graph_objects as go
-
-from src.app_functions.functions import *
+import streamlit as st
+import plotly.figure_factory as ff
+import requests
+from src.app_functions.functions import histogram_var
 from src.app_functions.map_layers import *
 
 @st.cache_data
@@ -20,16 +15,6 @@ def load_data_conus():
     dta = pd.read_parquet('data/sample_soc_observations/final_conus_v2.parquet', engine='pyarrow')
     return dta
 
-def histogram_var(data, var, label):
-    if label is True:
-        plot_model_comparisons(data, features)
-
-    fig = px.histogram(data, x=var, title=f"{var.replace('_',' ').replace('norm','').replace('mean','').replace('om','Organic matter').replace('bd','Bulk density').capitalize()} - Distribution")
-    st.plotly_chart(fig)
-
-#map=map22(tmp_path)
-#folium_static(map)
-#upload1()
 
 def haversine(lat1, lon1, lat2, lon2):
     """Calculate the great circle distance in kilometers between two points
@@ -62,13 +47,16 @@ def filter_within_radius(df, lat_point, lon_point, radius_km):
 
     return result_df
 
+#map=map22(tmp_path)
+#folium_static(map)
+#upload1()
 
 def map_plot(data):
-    import streamlit as st
-    import plotly.express as px
-    import plotly.figure_factory as ff
+    '''
 
-    # Create a hexbin map with Plotly
+    :param data:
+    :return:
+    '''
     fig = ff.create_hexbin_mapbox(
         data_frame=data,
         lat="latitude",
@@ -89,12 +77,18 @@ def map_plot(data):
                       "<extra></extra>",
         customdata=data[['land_cover_class','land_use_class']].values
     )
-
     fig.update_layout(mapbox_style="open-street-map")
     # Display the Plotly figure in Streamlit
     st.plotly_chart(fig, use_container_width=True)
 
-def soc_prediction(lat, lon, myzone):
+def soc_prediction(lat, lon, km_filter):
+    '''
+
+    :param lat:
+    :param lon:
+    :param myzone:
+    :return:
+    '''
 
     df = pd.read_parquet('data/grid2018/lulc_2018_wi.parquet')
 
@@ -104,8 +98,8 @@ def soc_prediction(lat, lon, myzone):
     else:
         zoom, center = 12, {"lat": lat, "lon": lon}
 
-    if myzone:
-        df = filter_within_radius(df, lat, lon, 2)
+    if km_filter:
+        df = filter_within_radius(df, lat, lon, km_filter)
         map_plot(df)
 
     else:
@@ -137,6 +131,10 @@ def soc_prediction(lat, lon, myzone):
 
 
 def map_layers_prediction():
+    '''
+
+    :return:
+    '''
     st.markdown("""
         <div style="text-align: center; color: black;">
             <h2>Soil Organic Carbon Prediction Tool</h2>
@@ -170,10 +168,16 @@ def map_layers_prediction():
     except Exception as e:
         st.error(f"No address >>> {e}")
 
-    myzone = st.sidebar.checkbox("2km Filter")
+    myzone = st.sidebar.radio("Ratio around the location (km)", [None, 2, 4], key='visibility')
     soc_prediction(lat, lng, myzone)
 
 def layers_deprec(lat, lng):
+    '''
+
+    :param lat:
+    :param lng:
+    :return:
+    '''
     m = folium.Map(location=[lat, lng], zoom_start=zoom)
     folium.Marker([lat, lng]).add_to(m)
 
@@ -252,4 +256,3 @@ def layers_deprec(lat, lng):
     ).add_to(m)
 
     folium_static(m)
-    #return m

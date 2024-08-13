@@ -1,61 +1,44 @@
-import os
-import io
-import base64
-from tempfile import NamedTemporaryFile
-import tempfile
-
 import numpy as np
-import pandas as pd
-import geopandas as gpd
-import matplotlib
 import matplotlib.pyplot as plt
-from matplotlib import cm
 import plotly.express as px
 import plotly.graph_objs as go
 import plotly.graph_objects as go
-import altair as alt
 from scipy.stats import t
-import rasterio
-from rasterio import warp
-from rasterio.plot import show
-from PIL import Image
-
-import geopy
-from geopy.geocoders import Nominatim
-from geopy.extra.rate_limiter import RateLimiter
-from shapely.geometry import Point, Polygon
+import requests
 import statsmodels.api as sm
 from statsmodels.tsa.holtwinters import ExponentialSmoothing, SimpleExpSmoothing
 
-import folium
-from folium import CircleMarker, TileLayer
-import branca.colormap as cm
 
 import streamlit as st
-import streamlit.components.v1 as components
-from streamlit_folium import folium_static
-
-import emoji
-import requests
-#from transformers import AutoModelForCausalLM, AutoTokenizer
-#import torch
 
 
 maptilerkey = st.secrets['MAP_TILER_KEY']
 
-import seaborn as sns
+def histogram_var(data, var):
+    '''
+
+    :param data:
+    :param var:
+    :return:
+    '''
+    var_ref = var.replace('_', ' ').replace('norm', '').replace('mean', '').replace('om', 'Organic matter').replace('bd', 'Bulk density').capitalize()
+    fig = px.histogram(data, x=var, title=f"{var_ref} - Distribution")
+    st.plotly_chart(fig)
 
 def trend_time_series(dframe, depth_c, select_state):
-    """
+    '''
 
-    """
-    if 'ALL' in depth_c:
-        df = dframe
-    else:
-        df = dframe[dframe['depth_cm']==int(depth_c.split('-')[-1])]
+    :param dframe:
+    :param depth_c:
+    :param select_state:
+    :return:
+    '''
+    df = dframe
+    if 'ALL' not in depth_c:
+        df = dframe[dframe['depth_cm'] == int(depth_c.split('-')[-1])]
 
     try:
-        if select_state!='ALL':
+        if select_state != 'ALL':
             df_aggregated = df.groupby(['State_Name', 'year']).agg(
                 mean_soil_organic_carbon=('soil_organic_carbon', 'median'),
                 sem_soil_organic_carbon=('soil_organic_carbon', lambda x: np.std(x, ddof=1) / np.sqrt(len(x))),
@@ -133,132 +116,3 @@ def trend_time_series(dframe, depth_c, select_state):
         st.plotly_chart(fig)
     except Exception as e:
         st.error(e)
-
-
-def histogram_var(data, var):
-    '''
-
-    :param data:
-    :param var:
-    :return:
-    '''
-
-    fig = px.histogram(data, x=var, title=f"{var.replace('_',' ').replace('norm','').replace('mean','').replace('om','Organic matter').replace('bd','Bulk density').capitalize()} - Distribution")
-    st.plotly_chart(fig)
-
-
-def upload1():
-    '''
-
-    :return:
-    '''
-    uploaded_file = st.file_uploader("Upload TIFF file", type=["tif", "tiff"], key=1)
-
-    if uploaded_file is not None:
-        # Create a temporary file to save the uploaded file
-        with NamedTemporaryFile(delete=False, suffix=".tif") as tmp:
-            tmp.write(uploaded_file.getvalue())
-            tmp_path = tmp.name
-
-        with rasterio.open(tmp_path) as src:
-            st.write(f"Number of bands: {src.count}")
-            st.write(f"Width: {src.width}")
-            st.write(f"Height: {src.height}")
-
-            st.subheader("Visualizing the TIFF file")
-            fig, ax = plt.subplots()
-            show(src, ax=ax)
-            st.pyplot(fig)
-
-
-            ###############################################################
-            array = src.read()
-            bounds = src.bounds
-
-            x1, y1, x2, y2 = src.bounds
-            bbox = [(bounds.bottom, bounds.left), (bounds.top, bounds.right)]
-
-            st.title("Plotting maps!")
-            # center on Liberty Bell
-            m = folium.Map(location=[43.071079, -89.418544], zoom_start=6)
-
-            # add marker for Liberty Bell
-            tooltip = "Manilla city"
-            folium.Marker(
-                [43.071079, -89.418544], popup="This is it!", tooltip=tooltip
-            ).add_to(m)
-
-            img = folium.raster_layers.ImageOverlay(
-                name="Sentinel 2",
-                image=np.moveaxis(array, 0, -1),
-                bounds=bbox,
-                opacity=0.9,
-                interactive=True,
-                cross_origin=False,
-                zindex=1,
-            )
-            # folium.Popup("I am an image").add_to(img)
-            img.add_to(m)
-            folium.LayerControl().add_to(m)
-
-            # call to render Folium map in Streamlit
-            folium_static(m)
-
-
-
-# Function to load data from the Parquet file
-def load_data(parquet_file_path):
-    df = pd.read_parquet(parquet_file_path)
-    return df
-
-
-# Function to preprocess the data
-def preprocess_data(df):
-    # Select relevant numeric and string/class columns
-    numeric_columns = df.select_dtypes(include=['number']).columns.tolist()
-    #st.write(numeric_columns)
-    string_columns = df.select_dtypes(include=['object']).columns.tolist()
-
-    # Combine the selected columns into a single text column
-    relevant_columns = numeric_columns[3:] + string_columns
-    df['text'] = df[relevant_columns].apply(lambda row: ' '.join(row.astype(str)), axis=1)
-    return df['text'].tolist()
-
-
-# Function to get context from GPT-3.5 using the new API
-def get_context_from_model(question, context):
-    qa_pipeline = pipeline("question-answering", model="distilbert-base-uncased-distilled-squad")
-    response = qa_pipeline(question=question, context=context)
-    return response['answer']
-
-
-# Main function of the application
-def chat_contextualized():
-    #st.write("Context Retriever with Transformers")
-
-    parquet_file_path = '../../data/sample_soc_observations/final_conus_v2.parquet'
-
-    # Load and preprocess the data
-    df = load_data(parquet_file_path)
-    texts = preprocess_data(df)
-
-    # Combine all texts to create a single context
-    context = " ".join(texts[:1000])  # You might need to adjust this depending on your context size
-
-    # Predefined questions
-    questions = [
-        "What is the average soil organic carbon content in the dataset?",
-        "Which region has the highest soil organic carbon content?",
-        "How does the soil organic carbon content vary across different regions?"
-    ]
-
-    selected_question = st.selectbox("Select a question", questions)
-
-    if st.button("Get Answer"):
-        if selected_question:
-            # Get the answer from the model
-            answer = get_context_from_model(selected_question, context)
-            st.write("Answer:")
-            st.write(answer)
-        else:
-            st.error("Please select a question.")

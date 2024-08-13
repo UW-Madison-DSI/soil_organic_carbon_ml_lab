@@ -170,8 +170,6 @@ def observed_soil_dynamic_properties():
     try:
         states = gpd.read_file('data/states_shape/States_shapefile.shp')
         if select_state is not None and select_state != 'ALL':
-            #gdf = gpd.GeoDataFrame(filtered_data,
-            #                       geometry=gpd.points_from_xy(filtered_data.longitude, filtered_data.latitude))
             gdf = gpd.GeoDataFrame(
                 filtered_data,
                 geometry=gpd.points_from_xy(filtered_data.longitude, filtered_data.latitude),
@@ -204,10 +202,6 @@ def observed_soil_dynamic_properties():
             trend_time_series(filtered_data0, depth_c, 'ALL')
         with col2:
             histogram_var(filtered_data1, soil_properties)
-
-        #fig, ax = plt.subplots()
-        #sns.lineplot(data=filtered_data0, x="year", y="soil_organic_carbon", errorbar=("se", 2), ax=ax)
-        #st.pyplot(fig)
 
     except Exception as e:
         st.write(f"----{e}")
