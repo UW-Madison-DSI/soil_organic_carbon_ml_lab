@@ -43,6 +43,10 @@ from src.app_functions.map_layers import *
 
 @st.cache_data
 def load_data_conus():
+    '''
+
+    :return:
+    '''
     dta = pd.read_parquet('data/sample_soc_observations/final_conus_v2.parquet', engine='pyarrow')
     return dta
 
@@ -107,7 +111,7 @@ def observed_soil_dynamic_properties():
 
     :return:
     '''
-    st.title("Soil Organic Carbon Tool.")
+    st.title("Sampling Locations of Soil Organic Carbon and Soil Dynamic Properties.")
     data = load_data_conus()
 
     map_style = st.sidebar.selectbox(
@@ -122,9 +126,7 @@ def observed_soil_dynamic_properties():
     depth_c = st.sidebar.selectbox("Soil Depth (cm)", depthslist, key=2)
 
     uploaded_file = None
-    label = False
     if uploaded_file is not None:
-        label = True
         try:
             data = None
 
@@ -153,37 +155,39 @@ def observed_soil_dynamic_properties():
 
     data = data.set_index('date')
 
-
     earliest_year = data["year"].min()
     latest_year = data["year"].max()
     min_year, max_year = st.slider(
         "Year Range of Data",
         min_value=int(earliest_year),
-        max_value=2020,
+        max_value=2019,
         value=[int(earliest_year), int(latest_year)],
     )
 
     filtered_data = data[data["year"] >= min_year - 1]
     filtered_data = filtered_data[filtered_data["year"] <= max_year]
-    try:
 
+    try:
         states = gpd.read_file('data/states_shape/States_shapefile.shp')
         if select_state is not None and select_state != 'ALL':
-            gdf = gpd.GeoDataFrame(filtered_data,
-                                   geometry=gpd.points_from_xy(filtered_data.longitude, filtered_data.latitude))
+            #gdf = gpd.GeoDataFrame(filtered_data,
+            #                       geometry=gpd.points_from_xy(filtered_data.longitude, filtered_data.latitude))
+            gdf = gpd.GeoDataFrame(
+                filtered_data,
+                geometry=gpd.points_from_xy(filtered_data.longitude, filtered_data.latitude),
+                crs="EPSG:4326"  # Ensure the correct coordinate reference system
+            )
             state_gdf = states[states['State_Name'] == select_state]
             # Perform spatial join
             filtered_data0 = gpd.sjoin(gdf, state_gdf, how="inner")
         else:
             filtered_data0 = filtered_data
 
-        soil_properties_c = st.sidebar.selectbox("Soil Properties",
-                                             features1
-                                              # 'soil_organic_carbon_predictions','soil_organic_carbon_stocks'
-                                              , key=3)
+        soil_properties_c = st.sidebar.selectbox("Soil Properties", features1, key=3)
         soil_properties = soil_properties_c.replace(" (observed)", "")
+
         terraincls = ['bd_mean', 'clay_mean', 'om_mean', 'ph_mean', 'sand_mean', 'silt_mean']
-        # depth_c = st.radio("Depth (cm)", ('0-5', '5-15', '15-30', '30-60', '60-100', '100-200', 'ALL'))
+
         if soil_properties in terraincls:
             depth_c1 = depth_c
             filtered_data1 = filtered_data0
@@ -193,16 +197,17 @@ def observed_soil_dynamic_properties():
         else:
             filtered_data1 = filtered_data0[filtered_data0['depth_cm'] == 5]
 
-        # st.write("Soil Profiles: ", len(filtered_data1['soil_id'].drop_duplicates()))
+        st.dataframe(filtered_data1)
         st.write("Total sample data: ", len(filtered_data1))
-
-
         map_observations(filtered_data1, soil_properties, map_style)
-        col1, col2 = st.columns([2, 1])
-        with col1:
-            trend_time_series(filtered_data0, depth_c, 'ALL')
-        with col2:
-            histogram_var(filtered_data1, soil_properties, label)
+        #col1, col2 = st.columns([3, 1])
+        #with col1:
+        #trend_time_series(filtered_data0, depth_c, 'ALL')
+        fig, ax = plt.subplots()
+        sns.lineplot(data=filtered_data0, x="year", y="soil_organic_carbon", errorbar=("se", 2), ax=ax)
+        st.pyplot(fig)
+        #with col2:
+        #    histogram_var(filtered_data1, soil_properties, label)
 
     except Exception as e:
-        st.write(f"{e}")
+        st.write(f"----{e}")

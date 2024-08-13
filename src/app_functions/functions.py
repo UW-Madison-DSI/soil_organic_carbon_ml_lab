@@ -136,6 +136,13 @@ def trend_time_series(dframe, depth_c, select_state):
 
 
 def histogram_var(data, var, label):
+    '''
+
+    :param data:
+    :param var:
+    :param label:
+    :return:
+    '''
     if label is True:
         plot_model_comparisons(data, features)
 
@@ -144,6 +151,10 @@ def histogram_var(data, var, label):
 
 
 def upload1():
+    '''
+
+    :return:
+    '''
     uploaded_file = st.file_uploader("Upload TIFF file", type=["tif", "tiff"], key=1)
 
     if uploaded_file is not None:
