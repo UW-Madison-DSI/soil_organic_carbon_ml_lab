@@ -35,7 +35,7 @@ import branca.colormap as cm
 import streamlit as st
 
 from src.app_functions.functions import *
-
+import requests
 def mstyle_n_layers(map_style):
     layers = []
     mapbox_style = "open-street-map"
