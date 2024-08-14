@@ -39,7 +39,7 @@ $ cd cyberinfraestructure_dsp_forecasting
 
 $ pip install -r requirements.txt
 $ pip install -r requirements_test.txt
-$ pip install -r api_socs_forecast/requirements.txt
+$ pip install -r api/requirements.txt
 
 # Install Backend dependencies
 
@@ -48,7 +48,7 @@ $ pip install fastapi
 
 # Run the server
 
-$ uvicorn api_socs_forecast.main:app
+$ uvicorn api.main:app
 
 # Server is set to be constant, so run in your browser:
 
