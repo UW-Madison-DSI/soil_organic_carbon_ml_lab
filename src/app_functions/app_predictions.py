@@ -55,18 +55,28 @@ def map_plot(data):
     Args:
         data (DataFrame): Data to plot with latitude, longitude, and other required columns.
     """
+    color_map = {
+        "Forest": "#33FF57",  # Example color for Class A
+        "Other": "#EF553B",  # Example color for Class B
+        "Non-Forest Wetland": "#00CC96",
+        "Developed": "#FF5733",
+        "Agriculture": "#F7DC6F",
+        "Rageland or Pasture": "#F1948A",# Example color for Class C
+        # Add more classes and colors as needed
+    }
+
     fig = ff.create_hexbin_mapbox(
         data_frame=data,
         lat="latitude",
         lon="longitude",
         nx_hexagon=2,
         opacity=0.3,
-        labels={"color": "Land Cover"},
-        color="land_use",
-        agg_func=np.mean,
-        color_continuous_scale="Viridis",
+        #labels={"color": "Land Cover"},
+        color="land_use_class",
+        #agg_func=np.mean,
+        color_continuous_scale=color_map,
         show_original_data=True,
-        original_data_marker=dict(size=4, opacity=0.6, color="black"),
+        #original_data_marker=dict(size=4, opacity=0.6, color="black"),
     )
     fig.update_traces(
         hovertemplate="<b>Land Cover</b>: %{customdata[0]}<br><b>Land Use</b>: %{customdata[1]}<br><extra></extra>",
@@ -76,7 +86,7 @@ def map_plot(data):
     st.plotly_chart(fig, use_container_width=True)
 
 
-def soc_prediction(lat, lon, km_filter):
+def soc_prediction(df, lat, lon, km_filter):
     """
     Predict SOC based on land use and land cover data.
     Args:
@@ -84,31 +94,46 @@ def soc_prediction(lat, lon, km_filter):
         lon (float): Longitude for the center of the analysis.
         km_filter (float): Radius in kilometers to filter the data.
     """
-    year = st.selectbox("Select the year", [1990, 2018], key=101)
-    df_path = f'data/grid{year}/lulc_{year}_wi.parquet'
-    df = pd.read_parquet(df_path)
+    #year = st.selectbox("Select the year", [1990, 2018], key=101)
+    #df_path = f'data/grid{year}/lulc_{year}_wi.parquet'
+    #df = pd.read_parquet(df_path)
 
     if lat is None:
-        zoom, center = 6, {"lat": 44.723802, "lon": -89.961530}
+        zoom, center = 4, {"lat": 44.723802, "lon": -89.961530}
     else:
-        zoom, center = 10.5, {"lat": lat, "lon": lon}
+        zoom, center = 8, {"lat": lat, "lon": lon}
 
-    if km_filter:
-        df = filter_within_radius(df, lat, lon, km_filter)
-        map_plot(df)
+    if df is None:
+        pass
+        #df = filter_within_radius(df, lat, lon, km_filter)
+
+        #map_plot(df)
     else:
+        color_map = {
+            "Forest": "#228B22",  # Bright green
+            "Other": "#90d5ff",  # Red-orange
+            "Non-Forest Wetland": "#00CC96",  # Greenish-blue
+            "Developed": "#FF5733",  # Bright red-orange
+            "Agriculture": "#f0f921",  # Yellow
+            "Rangeland or Pasture": "#F1948A",  # Light coral
+            "Water": "#007FFF",  # Blue
+            "Barren Land": "#E0FFFF",  # Light cyan
+            # Add more classes and colors as needed
+        }
+
         fig = px.scatter_mapbox(
             df,
             lat="latitude",
             lon="longitude",
             color='land_use_class',
             hover_data=['land_use_class', 'land_cover_class'],
-            color_continuous_scale=px.colors.sequential.Inferno_r,
+            color_discrete_map=color_map,  # Use color_discrete_map instead of color_continuous_scale
             zoom=zoom,
             center=center,
             height=500,
             mapbox_style="open-street-map"
         )
+
         fig.update_layout(mapbox=dict(style="open-street-map", center=center, zoom=zoom))
         st.plotly_chart(fig)
 
@@ -145,5 +170,31 @@ def map_layers_prediction():
     except Exception as e:
         st.error(f"No address >>> {e}")
 
-    km_input = st.sidebar.radio("Ratio around the location (km)", [None, 2, 4], key='visibility')
-    soc_prediction(lat, lon, km_input)
+    km_filter = st.sidebar.radio("Ratio around the location (km)", [None, 2, 4], key='visibility')
+
+    yr1 = 1990
+    df_path1 = f'data/grid{yr1}/lulc_{yr1}_wi.parquet'
+    df1 = pd.read_parquet(df_path1)
+    year2 = 2018
+    df_path2 = f'data/grid{year2}/lulc_{year2}_wi.parquet'
+    df2 = pd.read_parquet(df_path2)
+
+
+
+    cl1, cl2 = st.columns([2, 2])
+    if km_filter:
+        #with cl1:
+        st.write("## 1990")
+        df1 = filter_within_radius(df1, lat, lon, km_filter)
+        map_plot(df1)
+        #with cl2:
+        st.write("## 2018")
+        df2 = filter_within_radius(df2, lat, lon, km_filter)
+        map_plot(df2)
+    else:
+        #with cl1:
+        st.write("## 1990")
+        soc_prediction(df1, lat, lon, km_filter)
+        #with cl2:
+        st.write("## 2018")
+        soc_prediction(df2, lat, lon, km_filter)
