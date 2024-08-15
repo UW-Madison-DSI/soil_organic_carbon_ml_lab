@@ -56,12 +56,12 @@ def map_plot(data):
         data (DataFrame): Data to plot with latitude, longitude, and other required columns.
     """
     color_map = {
-        "Forest": "#33FF57",  # Example color for Class A
-        "Other": "#EF553B",  # Example color for Class B
-        "Non-Forest Wetland": "#00CC96",
-        "Developed": "#FF5733",
-        "Agriculture": "#F7DC6F",
-        "Rageland or Pasture": "#F1948A",# Example color for Class C
+        "Forest": "#33FF57",  # Bright green
+        "Other": "#EF553B",  # Red-orange
+        "Non-Forest Wetland": "#00CC96",  # Greenish-blue
+        "Developed": "#FF5733",  # Bright red-orange
+        "Agriculture": "#F7DC6F",  # Yellow
+        "Rangeland or Pasture": "#F1948A"  # Light coral
         # Add more classes and colors as needed
     }
 
@@ -69,14 +69,14 @@ def map_plot(data):
         data_frame=data,
         lat="latitude",
         lon="longitude",
-        nx_hexagon=2,
-        opacity=0.3,
-        #labels={"color": "Land Cover"},
+        nx_hexagon=5,
+        opacity=0.5,
+        labels={"color": "Land Use"},
         color="land_use_class",
-        #agg_func=np.mean,
-        color_continuous_scale=color_map,
+        agg_func=np.size,
+        color_continuous_scale="Magma",  # Use color_discrete_map for categorical data
         show_original_data=True,
-        #original_data_marker=dict(size=4, opacity=0.6, color="black"),
+        # original_data_marker=dict(size=4, opacity=0.6, color="black"),
     )
     fig.update_traces(
         hovertemplate="<b>Land Cover</b>: %{customdata[0]}<br><b>Land Use</b>: %{customdata[1]}<br><extra></extra>",
@@ -86,7 +86,7 @@ def map_plot(data):
     st.plotly_chart(fig, use_container_width=True)
 
 
-def soc_prediction(df, lat, lon, km_filter):
+def soc_prediction(df, lat, lon, zoom):
     """
     Predict SOC based on land use and land cover data.
     Args:
@@ -99,9 +99,9 @@ def soc_prediction(df, lat, lon, km_filter):
     #df = pd.read_parquet(df_path)
 
     if lat is None:
-        zoom, center = 4, {"lat": 44.723802, "lon": -89.961530}
+        center = {"lat": 44.723802, "lon": -89.961530}
     else:
-        zoom, center = 8, {"lat": lat, "lon": lon}
+        center = {"lat": lat, "lon": lon}
 
     if df is None:
         pass
@@ -183,14 +183,16 @@ def map_layers_prediction():
     if km_filter:
         st.write("## 1990")
         df1 = filter_within_radius(df1, lat, lon, km_filter)
-        map_plot(df1)
+        soc_prediction(df1, lat, lon, 11)
 
         st.write("## 2018")
+        from scipy.interpolate import griddata
         df2 = filter_within_radius(df2, lat, lon, km_filter)
-        map_plot(df2)
+        soc_prediction(df2, lat, lon, 11)
+
     else:
         st.write("## 1990")
-        soc_prediction(df1, lat, lon, km_filter)
+        soc_prediction(df1, lat, lon,8)
 
         st.write("## 2018")
-        soc_prediction(df2, lat, lon, km_filter)
+        soc_prediction(df2, lat, lon,8)
