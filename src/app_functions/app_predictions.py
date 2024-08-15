@@ -180,21 +180,17 @@ def map_layers_prediction():
     df2 = pd.read_parquet(df_path2)
 
 
-
-    cl1, cl2 = st.columns([2, 2])
     if km_filter:
-        #with cl1:
         st.write("## 1990")
         df1 = filter_within_radius(df1, lat, lon, km_filter)
         map_plot(df1)
-        #with cl2:
+
         st.write("## 2018")
         df2 = filter_within_radius(df2, lat, lon, km_filter)
         map_plot(df2)
     else:
-        #with cl1:
         st.write("## 1990")
         soc_prediction(df1, lat, lon, km_filter)
-        #with cl2:
+
         st.write("## 2018")
         soc_prediction(df2, lat, lon, km_filter)
