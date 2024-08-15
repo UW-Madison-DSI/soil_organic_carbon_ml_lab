@@ -108,7 +108,7 @@ app = FastAPI(
 @app.post('/v1/prediction', response_model=PredictionResponse)
 def make_model_prediction(request: PredictionRequest):
     """
-    Make a prediction based on the provided input.
+    Make a prediction of soc based on the provided input.
     """
     prediction = get_prediction(request)
     return prediction
