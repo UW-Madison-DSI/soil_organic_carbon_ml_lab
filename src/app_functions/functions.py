@@ -111,3 +111,85 @@ def trend_time_series(dframe, depth_c, select_state):
 
     except Exception as e:
         st.error(e)
+
+def init():
+    '''
+
+    Returns:
+
+    '''
+    turkey_coord = [39.653098, -99.101648]
+    turkey_map_normal = folium.Map(location=turkey_coord, zoom_start=5.5)
+    df = pd.read_parquet('data/sample_soc_observations/final_conus_v2.parquet', engine='pyarrow')
+    HeatMap(data=df[['latitude', 'longitude', 'soil_organic_carbon']], radius=5).add_to(turkey_map_normal)
+
+    heat_data = df[['latitude', 'longitude', 'soil_organic_carbon']].values.tolist()
+    HeatMap(data=heat_data, radius=5).add_to(turkey_map_normal)
+
+    norm = matplotlib.colors.Normalize(vmin=df['soil_organic_carbon'].min(), vmax=df['soil_organic_carbon'].max())
+    cmap = matplotlib.cm.get_cmap('YlOrRd')
+
+    for index, row in df.iterrows():
+        color = matplotlib.colors.rgb2hex(cmap(norm(row['soil_organic_carbon'])))
+
+        folium.CircleMarker(
+            location=[row['latitude'], row['longitude']],
+            radius=row['soil_organic_carbon'] / 10,
+            color='blue',
+            fill=True,
+            fill_color=color,
+            fill_opacity=0.6
+        ).add_to(turkey_map_normal)
+
+    st_folium(turkey_map_normal, width=700, height=500)
+
+
+def init22():
+
+    # Streamlit app title
+    st.title("Map with Rectangles around Points")
+
+    # Define your point (latitude, longitude)
+    lat, lon = 40.7128, -74.0060  # Example: New York City
+
+    # Create a small bounding box around the point
+    delta = 0.01  # Defines the size of the rectangle
+    bounding_box = [[lat - delta, lon - delta], [lat + delta, lon + delta]]
+
+    # Create a folium map centered on the point
+    m = folium.Map(location=[lat, lon], zoom_start=12)
+
+    # Add the rectangle to the map
+    folium.Rectangle(bounds=bounding_box, color='blue', fill=True, fill_opacity=0.2).add_to(m)
+
+    # Add a marker at the center point
+    folium.Marker([lat, lon], popup="New York City").add_to(m)
+
+    # Display the map in Streamlit using streamlit-folium
+    st_data = st_folium(m, width=700, height=500)
+    #st_folium(st_data, width=700, height=500)
+
+
+def pygwalkertool():
+    # Adjust the width of the Streamlit page
+    st.set_page_config(
+        page_title="Use Pygwalker In Streamlit",
+        layout="wide"
+    )
+
+    # Add Title
+    st.title("Use Pygwalker In Streamlit")
+
+    from datetime import datetime
+    # You should cache your pygwalker renderer, if you don't want your memory to explode
+    @st.cache_resource
+    def get_pyg_renderer() -> "StreamlitRenderer":
+        df = pd.read_parquet('data/sample_soc_observations/final_conus_v2.parquet', engine='pyarrow')
+
+        df['date']=df['year'].apply(lambda x: f'{int(x)}-01-01', '%Y-%m-%d')
+        st.dataframe(df)
+        # If you want to use feature of saving chart config, set `spec_io_mode="rw"`
+        return StreamlitRenderer(df, spec="./gw_config.json", spec_io_mode="rw")
+
+    renderer = get_pyg_renderer()
+    renderer.explorer()

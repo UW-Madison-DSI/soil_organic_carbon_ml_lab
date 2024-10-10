@@ -5,6 +5,7 @@ import requests
 
 from src.app_functions.functions import histogram_var
 from src.app_functions.map_layers import *
+from streamlit_folium import folium_static
 
 
 @st.cache_data
@@ -86,7 +87,43 @@ def map_plot(data):
     st.plotly_chart(fig, use_container_width=True)
 
 
-def soc_prediction(df, lat, lon, zoom):
+def soc_prediction_map(data, lat, lon, zoom):
+    m = folium.Map(location=[lat, lon], zoom_start=zoom, tiles='OpenStreetMap')
+    tooltip = "Liberty Bell"
+    folium.Marker([39.949610, -75.150282], popup = "Liberty Bell", tooltip=tooltip).add_to(m)
+    # Add a base map layer
+    folium.LayerControl().add_to(m)
+
+    # Add circle markers for each location in the data
+    for _, row in data.iterrows():
+        folium.CircleMarker(
+            location=[row['latitude'], row['longitude']],
+            color=row['land_use_class'],  # Color of the marker
+            fill=True,
+            fill_color=row['land_use_class'],  # Fill color of the marker
+            fill_opacity=0.5,
+            popup=row['land_use_class']  # Popup that displays the location name
+        ).add_to(m)
+
+    # Add a grid layer (this could be a GeoJSON, WMS layer, or custom drawn grid)
+    grid_layer = folium.FeatureGroup(name='Grid Layer')
+    for lat in range(int(data['latitude'].min()), int(data['latitude'].max()) + 1):
+        for lon in range(int(data['longitude'].min()), int(data['longitude'].max()) + 1):
+            folium.PolyLine(
+                locations=[(lat, lon), (lat + 1, lon), (lat + 1, lon + 1), (lat, lon + 1), (lat, lon)],
+                color='gray', weight=1, opacity=0.7
+            ).add_to(grid_layer)
+
+    grid_layer.add_to(m)
+
+    # Add layer control to toggle layers
+    folium.LayerControl().add_to(m)
+
+    # Display the map in Streamlit
+    folium_static(m)
+
+
+def soc_prediction_map1(df, lat, lon, zoom):
     """
     Predict SOC based on land use and land cover data.
     Args:
@@ -94,12 +131,9 @@ def soc_prediction(df, lat, lon, zoom):
         lon (float): Longitude for the center of the analysis.
         km_filter (float): Radius in kilometers to filter the data.
     """
-    #year = st.selectbox("Select the year", [1990, 2018], key=101)
-    #df_path = f'data/grid{year}/lulc_{year}_wi.parquet'
-    #df = pd.read_parquet(df_path)
 
     if lat is None:
-        center = {"lat": 44.723802, "lon": -89.961530}
+        center = {"lat": 42.0285, "lon": -93.85}
     else:
         center = {"lat": lat, "lon": lon}
 
@@ -150,8 +184,8 @@ def map_layers_prediction():
         </div>
         """, unsafe_allow_html=True)
 
-    lat = 44.723802
-    lon = -89.961530
+    lat = 42.0285
+    lon = -93.85
 
     try:
         input_option = st.sidebar.checkbox("Input address")
@@ -165,34 +199,66 @@ def map_layers_prediction():
             }
             lat, lon = locations.get(address, get_location(address))
         else:
-            lat = st.sidebar.number_input("Latitude:", value=43.064)
-            lon = st.sidebar.number_input("Longitude:", value=-89.407)
+            lat = st.sidebar.number_input("Latitude:", value=42.0285)
+            lon = st.sidebar.number_input("Longitude:", value=-93.85)
     except Exception as e:
         st.error(f"No address >>> {e}")
 
     km_filter = st.sidebar.radio("Ratio around the location (km)", [None, 2, 4], key='visibility')
+    #pd.read_parquet('data/sample_soc_observations/soc_2018.parquet', engine='pyarrow')
+    #yr1 = 1990
+    #df_path1 = f'data/grid{yr1}/lulc_{yr1}_wi.parquet'
+    df1 = pd.read_parquet('data/soc_2018.parquet', engine='pyarrow')
 
-    yr1 = 1990
-    df_path1 = f'data/grid{yr1}/lulc_{yr1}_wi.parquet'
-    df1 = pd.read_parquet(df_path1)
-    year2 = 2018
-    df_path2 = f'data/grid{year2}/lulc_{year2}_wi.parquet'
-    df2 = pd.read_parquet(df_path2)
+    #year2 = 2018
+    #df_path2 = f'data/grid{year2}/lulc_{year2}_wi.parquet'
+    #df2 = pd.read_parquet(df_path2)
 
 
     if km_filter:
-        st.write("## 1990")
-        df1 = filter_within_radius(df1, lat, lon, km_filter)
-        soc_prediction(df1, lat, lon, 11)
+        #st.write("## 1990")
+        #df1 = filter_within_radius(df1, lat, lon, km_filter)
+        #soc_prediction_map(df1, lat, lon, 11)
 
-        st.write("## 2018")
+
+        #st.write("## 2018")
+        lat = 42.0285
+        lon = -93.85
         from scipy.interpolate import griddata
-        df2 = filter_within_radius(df2, lat, lon, km_filter)
-        soc_prediction(df2, lat, lon, 11)
+        df1 = filter_within_radius(df1, lat, lon, km_filter)
+        soc_prediction_map(df1, lat, lon, 11)
 
     else:
-        st.write("## 1990")
-        soc_prediction(df1, lat, lon,8)
+        #st.write("## 1990")
+        soc_prediction_map(df1, lat, lon,8)
 
-        st.write("## 2018")
-        soc_prediction(df2, lat, lon,8)
+        #st.write("## 2018")
+        #soc_prediction_map(df2, lat, lon,8)
+
+def init():
+    turkey_coord = [39.653098, -99.101648]
+    turkey_map_normal = folium.Map(location=turkey_coord, zoom_start=5.5)
+    df = pd.read_parquet('data/soc_2018.parquet', engine='pyarrow')
+    #pd.read_parquet('data/sample_soc_observations/final_conus_v2.parquet', engine='pyarrow')
+    st.dataframe(df)
+    HeatMap(data=df[['latitude', 'longitude', 'soil_organic_carbon']], radius=5).add_to(turkey_map_normal)
+
+    heat_data = df[['latitude', 'longitude', 'soil_organic_carbon']].values.tolist()
+    HeatMap(data=heat_data, radius=5).add_to(turkey_map_normal)
+
+    norm = matplotlib.colors.Normalize(vmin=df['soil_organic_carbon'].min(), vmax=6)#df['soil_organic_carbon'].max())
+    cmap = matplotlib.cm.get_cmap('YlOrRd')
+
+    for index, row in df.iterrows():
+        color = matplotlib.colors.rgb2hex(cmap(norm(row['soil_organic_carbon'])))
+
+        folium.CircleMarker(
+            location=[row['latitude'], row['longitude']],
+            radius=row['soil_organic_carbon'] / 10,
+            color='blue',
+            fill=True,
+            fill_color=color,
+            fill_opacity=0.6
+        ).add_to(turkey_map_normal)
+
+    st_folium(turkey_map_normal, width=700, height=500)
