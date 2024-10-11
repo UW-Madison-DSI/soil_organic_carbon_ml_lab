@@ -29,7 +29,7 @@ Instructions to run this script:
 start_time = time.time()
 
 df = pd.read_csv('final_conus_v2.csv')
-features=['depth_cm','total_precipitation', #'min_temperature','max_temperature',
+features = ['depth_cm','total_precipitation', #'min_temperature','max_temperature',
        'mean_temperature',  'dem', 'slope', 
        'aspect','hillshade', 'bd_mean', 'land_cover','land_use',
        'clay_mean', #'om_mean', 
