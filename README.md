@@ -2,8 +2,10 @@
 
 This repository contains educational content and tools for performing **machine learning** (ML) modeling on **soil organic carbon** data. The goal is to provide an interactive learning experience for users to explore and apply various ML techniques in environmental data modeling, specifically focused on soil health metrics.
 
-Visit our site [here](https://soilorganiccarbon-ml-lab.streamlit.app/)
-and our API for soil organic carbon prediction in CONUS [here](https://connect.doit.wisc.edu/soil_organic_carbon_prediction/)
+Visit our **Cyber-Infraestructure** [here](https://soilorganiccarbon-ml-lab.streamlit.app/)
+
+Link to our public API of soil organic carbon model for CONUS [here](https://connect.doit.wisc.edu/soil_organic_carbon_prediction/)
+
 
 ## Table of Contents
 
@@ -20,7 +22,6 @@ and our API for soil organic carbon prediction in CONUS [here](https://connect.d
 
 The **Soil Organic Carbon ML Lab** is designed to help users learn how to:
 - Analyze soil organic carbon data using various machine learning models.
-- Visualize trends in soil carbon content across different regions and over time.
 - Experiment with data preprocessing, model training, and evaluation in an interactive environment.
 
 The lab is equipped with various tools and educational resources that allow users to build predictive models and explore geospatial data related to soil properties.
