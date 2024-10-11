@@ -92,7 +92,7 @@ This will launch a web interface for interacting with the soil organic carbon ML
 
 ## Data
 
-The soil organic carbon data used in this project can be sourced from [public datasets](https://example.com) or can be loaded from your local directory. 
+The soil organic carbon data used in this project can be sourced from public datasets, as described [here](https://github.com/UW-Madison-DSI/soil_organic_carbon_ml_lab/blob/main/docs/soc_forecasting.pdf) or can be loaded from your local directory. 
 
 - **states_shape/States_shapefile.shp**: Shapefile used for geospatial analysis of states.
 - **data/sample_soc_observations/**: Contains sample data for soil organic carbon observations. This data was retrived in a big effor of data extraction from public sources.
