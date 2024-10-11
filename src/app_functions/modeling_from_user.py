@@ -193,7 +193,7 @@ def modeling():
         y, X = patsy.dmatrices(formula, subset_data)
         y = y.ravel()
 
-        model_type = st.radio('Please choose the modeling_soc_conus you want to perform',
+        model_type = st.radio('Please choose the modeling you want to perform',
                               ('Linear Regression', 'Random Forest'), key=100101)
         if model_type == 'Random Forest':
             st.write("It might take few minutes.")
