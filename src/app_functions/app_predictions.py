@@ -234,31 +234,3 @@ def map_layers_prediction():
 
         #st.write("## 2018")
         #soc_prediction_map(df2, lat, lon,8)
-
-def init():
-    turkey_coord = [39.653098, -99.101648]
-    turkey_map_normal = folium.Map(location=turkey_coord, zoom_start=5.5)
-    df = pd.read_parquet('data/soc_2018.parquet', engine='pyarrow')
-    #pd.read_parquet('data/sample_soc_observations/final_conus_v2.parquet', engine='pyarrow')
-    st.dataframe(df)
-    HeatMap(data=df[['latitude', 'longitude', 'soil_organic_carbon']], radius=5).add_to(turkey_map_normal)
-
-    heat_data = df[['latitude', 'longitude', 'soil_organic_carbon']].values.tolist()
-    HeatMap(data=heat_data, radius=5).add_to(turkey_map_normal)
-
-    norm = matplotlib.colors.Normalize(vmin=df['soil_organic_carbon'].min(), vmax=6)#df['soil_organic_carbon'].max())
-    cmap = matplotlib.cm.get_cmap('YlOrRd')
-
-    for index, row in df.iterrows():
-        color = matplotlib.colors.rgb2hex(cmap(norm(row['soil_organic_carbon'])))
-
-        folium.CircleMarker(
-            location=[row['latitude'], row['longitude']],
-            radius=row['soil_organic_carbon'] / 10,
-            color='blue',
-            fill=True,
-            fill_color=color,
-            fill_opacity=0.6
-        ).add_to(turkey_map_normal)
-
-    st_folium(turkey_map_normal, width=700, height=500)

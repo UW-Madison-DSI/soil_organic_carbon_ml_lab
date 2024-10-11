@@ -43,7 +43,7 @@ def test_prediction_request_validation():
     assert response.status_code == 422
 
 def test_prediction_internal_server_error():
-    # Test the prediction endpoint when an exception occurs (e.g., model file not found)
+    # Test the prediction endpoint when an exception occurs (e.g., modeling_soc_conus file not found)
     response = client.post('/v1/prediction', json=test_data)
     assert response.status_code == 500
     assert response.json() == {"detail": "Model file not found"}

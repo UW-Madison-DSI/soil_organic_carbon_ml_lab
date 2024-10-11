@@ -92,11 +92,11 @@ def linear_regression_from_formula(formula: str, data: pd.DataFrame):
         # Parse the formula and split into dependent (outcome) and independent (x1, x2...) variables
         y, X = patsy.dmatrices(formula, data)
 
-        # Fit the model using Ordinary Least Squares (OLS)
+        # Fit the modeling_soc_conus using Ordinary Least Squares (OLS)
         model = sm.OLS(y, X)
         result = model.fit()
 
-        # Return the fitted model
+        # Return the fitted modeling_soc_conus
         return result
     except patsy.PatsyError as e:
         raise ValueError(f"Error in formula: {str(e)}")
@@ -140,7 +140,7 @@ def modeling():
         st.write("### Available Columns")
         st.write(", ".join(data[[x for x in data.columns if 'id' not in x and 'Unn' not in x and 'label' not in x]].columns))
 
-        formula = st.text_input('Enter the formula for the model (e.g., soil_organic_carbon ~ aspect + bd_mean). The left '
+        formula = st.text_input('Enter the formula for the modeling_soc_conus (e.g., soil_organic_carbon ~ aspect + bd_mean). The left '
                                 'side is the independent or outcome variable:',
                                 value='soil_organic_carbon ~ aspect + bd_mean')
 
@@ -194,7 +194,7 @@ def modeling():
         y, X = patsy.dmatrices(formula, subset_data)
         y = y.ravel()
 
-        model_type = st.radio('Please choose the model you want to perform',
+        model_type = st.radio('Please choose the modeling_soc_conus you want to perform',
                               ('Linear Regression', 'Random Forest'), key=100101)
         if model_type == 'Random Forest':
             if st.button('Run Model'):
@@ -218,7 +218,7 @@ def modeling():
                 st.pyplot(fig)
         else:
             if st.button('Run Model'):
-                # Ask user to input the model formula
+                # Ask user to input the modeling_soc_conus formula
                 # Perform regression when button is clicked
                 try:
                     result = linear_regression_from_formula(formula, data)
@@ -226,7 +226,7 @@ def modeling():
                     # R-squared
                     r_squared = result.rsquared
                     st.write(
-                        f"The R-squared of the model is {r_squared:.4f}, indicating that the model explains {r_squared * 100:.2f}% of the variance in `soil_organic_carbon`.")
+                        f"The R-squared of the modeling_soc_conus is {r_squared:.4f}, indicating that the modeling_soc_conus explains {r_squared * 100:.2f}% of the variance in `soil_organic_carbon`.")
 
                     st.text(result.summary())
 
