@@ -42,11 +42,11 @@ def main():
                                                                    "SOC maps"), key=100)
 
     if sidebar_object == 'SOC sample data':
-        map_layers_prediction()
+        observed_soil_dynamic_properties()
     elif sidebar_object == 'My SOC models':
         modeling()
     else:
-        observed_soil_dynamic_properties()
+        map_layers_prediction()
 
 
 if __name__ == "__main__":

@@ -209,7 +209,7 @@ def map_layers_prediction():
     #yr1 = 1990
     #df_path1 = f'data/grid{yr1}/lulc_{yr1}_wi.parquet'
     df1 = pd.read_parquet('data/soc_2018.parquet', engine='pyarrow')
-
+    st.write(df1)
     #year2 = 2018
     #df_path2 = f'data/grid{year2}/lulc_{year2}_wi.parquet'
     #df2 = pd.read_parquet(df_path2)

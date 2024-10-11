@@ -131,12 +131,12 @@ def observed_soil_dynamic_properties() -> None:
     try:
         # Load state shapefile and filter by selected state
         states = gpd.read_file('data/states_shape/States_shapefile.shp')
+        gdf = gpd.GeoDataFrame(
+            filtered_data,
+            geometry=gpd.points_from_xy(filtered_data.longitude, filtered_data.latitude),
+            crs="EPSG:4326"
+        )
         if select_state != 'ALL':
-            gdf = gpd.GeoDataFrame(
-                filtered_data,
-                geometry=gpd.points_from_xy(filtered_data.longitude, filtered_data.latitude),
-                crs="EPSG:4326"
-            )
             state_gdf = states[states['State_Name'] == select_state]
             filtered_data0 = gpd.sjoin(gdf, state_gdf, how="inner")
         else:
@@ -159,12 +159,18 @@ def observed_soil_dynamic_properties() -> None:
         # Map visualization
         map_observations(filtered_data1, soil_properties, map_style)
 
-        # Split the screen into two columns for time series and histogram
-        col1, col2 = st.columns([3, 1])
-        with col1:
-            trend_time_series(filtered_data0, depth_c, 'ALL')
-        with col2:
-            histogram_var(filtered_data1, soil_properties)
-
+        if 'State_Name' in filtered_data1.columns:
+            # Split the screen into two columns for time series and histogram
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                trend_time_series(filtered_data0, depth_c, 'ALL')
+            with col2:
+                histogram_var(filtered_data1, soil_properties)
+        else:
+            col1, col2 = st.columns([1, 1])
+            with col1:
+                scatterplot_var(filtered_data1, soil_properties, 'soil_organic_carbon')
+            with col2:
+                histogram_var(filtered_data1, soil_properties)
     except Exception as e:
         st.write(f"Error: {e}")
