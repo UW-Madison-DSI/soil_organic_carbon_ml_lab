@@ -1,80 +1,130 @@
-<h1 align="center">
+# Soil Organic Carbon ML Lab
 
-  Cyber infraestructure for Soil Organic Carbon Stock Forecasting Model
-  <br>
-</h1>
+This repository contains educational content and tools for performing **machine learning** (ML) modeling on **soil organic carbon** data. The goal is to provide an interactive learning experience for users to explore and apply various ML techniques in environmental data modeling, specifically focused on soil health metrics.
 
-<h4 align="center">Random Forest Predictive Model Served as API build with FastAPI. This model predicts the soil organic carbon and soil organic carbon stocks in CONUS based on the soil dynamic properties of soil.
-</h4>
+## Table of Contents
 
-Huang et al., 2019
+- [Project Overview](#project-overview)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Data](#data)
+- [Features](#features)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
-## Key Features
+## Project Overview
 
-This machine learning model predicts socs. So here are the key features of this project:
-* Visualization of data https://socforecastingjhlab.streamlit.app
-* The model is supported under a backend API built with `FastAPI` through the `POST` method, it asks the soil data as `JSON` format and returns its socs prediction in the same format. The API is served in posit connect: https://connect.doit.wisc.edu/soil_organic_carbon_prediction/v1/prediction see example below to test out.
+The **Soil Organic Carbon ML Lab** is designed to help users learn how to:
+- Analyze soil organic carbon data using various machine learning models.
+- Visualize trends in soil carbon content across different regions and over time.
+- Experiment with data preprocessing, model training, and evaluation in an interactive environment.
 
-* The `Dockerfile` saves all required information to run the model in another machines through a container. Just running the `initializer.sh` is enough to turn the whole system on.
+The lab is equipped with various tools and educational resources that allow users to build predictive models and explore geospatial data related to soil properties.
 
-* The `src` dir contains all the scripts required to update the model parameters.
+## Installation
 
+### Prerequisites
 
-<h1> Front-End Stack</h1>
+- Python 3.8 or higher
+- `pip` package manager
+- Recommended: A virtual environment tool such as `venv` or `conda`.
 
-Currently, the project is on development phase.  
+### Clone the Repository
 
-## How To Use our API
+To get started, clone this repository to your local machine:
 
-To clone and run this application, follow these steps
+\`\`\`bash
+git clone https://github.com/UW-Madison-DSI/soil_organic_carbon_ml_lab.git
+cd soil_organic_carbon_ml_lab
+\`\`\`
 
+### Virtual Environment
 
-``` EXAMPLE
-import requests
+Set up a virtual environment (recommended):
 
-url = 'https://connect.doit.wisc.edu/soil_organic_carbon_prediction/v1/prediction'
+\`\`\`bash
+# For venv
+python3 -m venv venv
+source venv/bin/activate  # On Windows, use 'venv\\Scripts\\activate'
 
-headers = {
-    'accept': 'application/json',
-    'Content-Type': 'application/json'
-}
+# For conda
+conda create --name soil_ml python=3.8
+conda activate soil_ml
+\`\`\`
 
-data = {
-    "depth_cm": 5,
-    "total_precipitation": 665.71,
-    "mean_temperature": 19.702397,
-    "dem": 1646.838135,
-    "slope": 1.61754,
-    "aspect": 25.694852,
-    "hillshade": 178.0,
-    "bd_mean": 1.317050,
-    "clay_mean": 15.225413,
-    "om_mean": 0.063926,
-    "ph_mean": 7.000336,
-    "sand_mean": 55.055664,
-    "land_use": 5,
-    "land_cover": 5
-}
+### Install Dependencies
 
-response = requests.post(url, headers=headers, json=data)
+Install the required Python packages:
 
-if response.status_code == 200:
-    print("Prediction successful!")
-    print(response.json())
-else:
-    print(f"Failed to get prediction: {response.status_code}")
-    print(response.text)
+\`\`\`bash
+pip install -r requirements.txt
+\`\`\`
 
-```
-## The API response should look as follows:
-```
-Prediction successful!
-{'soil_organic_carbon': 1.5868605375289917, 'soil_organic_carbon_stock': 10.449873354762794}
-```
-## Resources
+## Usage
 
-This software uses the following data and packages:
+### Running the Jupyter Notebooks
 
-- [FastAPI](https://fastapi.tiangolo.com)
-- [Scikit-Learn](https://scikit-learn.org/stable/)
-- [Joblib](https://joblib.readthedocs.io/en/latest/)
+This repository includes several Jupyter notebooks that guide users through different stages of machine learning modeling for soil organic carbon data. To run the notebooks:
+
+\`\`\`bash
+# Start Jupyter
+jupyter notebook
+\`\`\`
+
+Then, open the notebook of your choice and follow the instructions within.
+
+### Running the Streamlit App
+
+If the project includes a Streamlit-based web application, run the app with:
+
+\`\`\`bash
+streamlit run app.py
+\`\`\`
+
+This will launch a web interface for interacting with the soil organic carbon ML models.
+
+### Example Notebooks
+
+- **Data Preprocessing.ipynb**: Steps to clean, prepare, and explore the soil organic carbon dataset.
+- **ML Modeling.ipynb**: Build and evaluate machine learning models such as Random Forest and XGBoost to predict soil carbon levels.
+- **Visualization.ipynb**: Visualize trends in soil organic carbon across different geographical regions.
+
+## Data
+
+The soil organic carbon data used in this project can be sourced from [public datasets](https://example.com) or can be loaded from your local directory. 
+
+- **states_shape/States_shapefile.shp**: Shapefile used for geospatial analysis of states.
+- **data/sample_soc_observations/**: Contains sample data for soil organic carbon observations. This data was retrived in a big effor of data extraction from public sources.
+
+Ensure that the data is structured correctly in the required format before running the models.
+
+## Features
+
+- 
+## Contributing
+
+Contributions are welcome! Please follow these steps to contribute:
+
+1. Fork the repository.
+2. Create a new branch (\`git checkout -b feature-branch\`).
+3. Commit your changes (\`git commit -m "Add some feature"\`).
+4. Push to the branch (\`git push origin feature-branch\`).
+5. Open a pull request.
+
+### Reporting Issues
+
+If you encounter any bugs or have questions, please open an issue in the repository.
+
+## License
+
+This project is licensed under the MIT License.
+
+## Contact
+
+For questions or inquiries, please contact:
+
+- **Jingyi Huang** - Assistant Professor, Soil Sciences Dept at UW-Madison
+  Email: [jhuang426@wisc.edu](mailto:jhuang426@wisc.edu)
+- **Maria Oros** - Data Scientist, UW-Madison DSI
+  Email: [moros2@wisc.edu](mailto:moros2@wisc.edu)

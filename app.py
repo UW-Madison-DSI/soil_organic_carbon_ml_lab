@@ -60,6 +60,6 @@ if __name__ == "__main__":
 
     This application is part of an ongoing cyberinfraestructure on soil organic carbon. You can find the source code and contribute to the project via the GitHub repository. We also welcome your feedback to improve the app. Please take a moment to fill out a short survey.
 
-    - [GitHub Repository](https://github.com/yourusername/yourrepo)
-    - [Survey Link](https://github.com/UW-Madison-DSI/soil_organic_carbon_ml_lab.git)
+    - [GitHub Repository](https://github.com/UW-Madison-DSI/soil_organic_carbon_ml_lab.git)
+    - [Survey Link](https://uwmadison.co1.qualtrics.com/jfe/form/SV_0PwdnBLdCjFPvlY)
     """)
