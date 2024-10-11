@@ -8,6 +8,18 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from sklearn.model_selection import train_test_split
 
+"""
+This is the code to evaluate multiple pre-trained models.
+
+Instructions to run this script:
+1. Ensure you have Python 3 installed along with the required libraries. You can install the dependencies using:
+   pip install numpy pandas scikit-learn joblib xgboost
+2. Place the dataset 'final_conus_v2.csv' in the same directory as this script or update the file path accordingly.
+3. Run the script by executing the following command in your terminal:
+   python <script_name>.py
+4. The output, including the trained models and predictions, will be saved in the 'outputs_best_2/' directory.
+"""
+
 # Start timer
 start_time = time.time()
 
