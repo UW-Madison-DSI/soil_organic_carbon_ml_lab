@@ -111,9 +111,9 @@ def modeling():
     sidebar_object = st.radio('Please choose the data option you would like to use',
                                       ('Use the default dataset of soil dynamic properties',
                                        'Upload my soil organic carbon data'), key=100100)
-    flag=True
+    flag = True
     if sidebar_object == 'Upload my soil organic carbon data':
-        st.write("Please be sure the dataset is with a soil_organic_carbon column, and potential covariates thaat can play the role of predictors.")
+        st.write("Please be sure the dataset is with a column called `soil_organic_carbon` , and other numerical variables thaat can play the role of predictors.")
         # File uploader for CSV
         uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
 
@@ -125,17 +125,16 @@ def modeling():
         else:
             flag=False
             pass
-            #data = pd.read_parquet('data/sample_soc_observations/final_conus_v2.parquet', engine='pyarrow')
-            #data = data[['soil_organic_carbon','depth_cm', 'aspect', 'total_precipitation', 'bd_mean']].head(500)
+
     else:
-        flag=True
+        flag = True
         # Sample data if no file is uploaded
         data = pd.read_parquet('data/sample_soc_observations/final_conus_v2.parquet', engine='pyarrow')
         st.write("### Sample Data")
         st.write("The sample data is the one described in sample data section.")
         st.write(data[[x for x in data.columns if 'id' not in x and 'Unn' not in x and 'label' not in x]].head())
 
-    if flag==True:
+    if flag == True:
         # Display column names
         st.write("### Available Columns")
         st.write(", ".join(data[[x for x in data.columns if 'id' not in x and 'Unn' not in x and 'label' not in x]].columns))
@@ -197,6 +196,7 @@ def modeling():
         model_type = st.radio('Please choose the modeling_soc_conus you want to perform',
                               ('Linear Regression', 'Random Forest'), key=100101)
         if model_type == 'Random Forest':
+            st.write("It might take few minutes.")
             if st.button('Run Model'):
                 model = RandomForest(n_estimators=10, max_depth=3)
                 model.fit(np.array(X), y)

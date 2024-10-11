@@ -13,7 +13,6 @@ First, clone this repository to your local machine and locate at the script fath
 ```bash
 git clone https://github.com/UW-Madison-DSI/soil_organic_carbon_ml_lab.git
 cd src/ml_soil_organic_carbon_predict
-run python predict_soc.py
 ```
 ## 2. Set Up a Virtual Environment (Optional but Recommended)
 ```bash
