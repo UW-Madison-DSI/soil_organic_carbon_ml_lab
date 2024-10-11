@@ -37,11 +37,11 @@ def main():
     local_css("frontend/css/streamlit.css")
     st.sidebar.title("Functionalities")
 
-    sidebar_object = st.sidebar.radio('Please choose the option', ('SOC sample data',
-                                                                   'My SOC models',
+    sidebar_object = st.sidebar.radio('Please choose the option', ('My SOC models',
+                                                                   'SOC sample data',
                                                                    "SOC maps"), key=100)
 
-    if sidebar_object == 'SOC Assistant':
+    if sidebar_object == 'SOC sample data':
         map_layers_prediction()
     elif sidebar_object == 'My SOC models':
         modeling()
@@ -61,5 +61,5 @@ if __name__ == "__main__":
     This application is part of an ongoing cyberinfraestructure on soil organic carbon. You can find the source code and contribute to the project via the GitHub repository. We also welcome your feedback to improve the app. Please take a moment to fill out a short survey.
 
     - [GitHub Repository](https://github.com/yourusername/yourrepo)
-    - [Survey Link](https://uwmadison.co1.qualtrics.com/jfe/form/SV_0PwdnBLdCjFPvlY)
+    - [Survey Link](https://github.com/UW-Madison-DSI/soil_organic_carbon_ml_lab.git)
     """)
