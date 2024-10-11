@@ -34,16 +34,16 @@ The lab is equipped with various tools and educational resources that allow user
 
 To get started, clone this repository to your local machine:
 
-\`\`\`bash
+```
 git clone https://github.com/UW-Madison-DSI/soil_organic_carbon_ml_lab.git
 cd soil_organic_carbon_ml_lab
-\`\`\`
+```
 
 ### Virtual Environment
 
 Set up a virtual environment (recommended):
 
-\`\`\`bash
+```
 # For venv
 python3 -m venv venv
 source venv/bin/activate  # On Windows, use 'venv\\Scripts\\activate'
@@ -51,15 +51,15 @@ source venv/bin/activate  # On Windows, use 'venv\\Scripts\\activate'
 # For conda
 conda create --name soil_ml python=3.8
 conda activate soil_ml
-\`\`\`
+```
 
 ### Install Dependencies
 
 Install the required Python packages:
 
-\`\`\`bash
+```
 pip install -r requirements.txt
-\`\`\`
+```
 
 ## Usage
 
@@ -67,10 +67,6 @@ pip install -r requirements.txt
 
 This repository includes several Jupyter notebooks that guide users through different stages of machine learning modeling for soil organic carbon data. To run the notebooks:
 
-\`\`\`bash
-# Start Jupyter
-jupyter notebook
-\`\`\`
 
 Then, open the notebook of your choice and follow the instructions within.
 
@@ -78,9 +74,9 @@ Then, open the notebook of your choice and follow the instructions within.
 
 If the project includes a Streamlit-based web application, run the app with:
 
-\`\`\`bash
+```
 streamlit run app.py
-\`\`\`
+```
 
 This will launch a web interface for interacting with the soil organic carbon ML models.
 
