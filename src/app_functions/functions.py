@@ -33,6 +33,51 @@ def histogram_var(data, var):
     st.plotly_chart(fig)
 
 
+def scatterplot_var(data, x_var, y_var):
+    """
+    Generate and display a scatter plot for the specified variables.
+    Args:
+        data (DataFrame): The dataset containing the variables.
+        x_var (str): The variable to plot on the x-axis.
+        y_var (str): The variable to plot on the y-axis.
+    """
+    # Check if both variables are numeric
+    if not pd.api.types.is_numeric_dtype(data[x_var]):
+        st.write(f"{x_var} is not a numeric variable.")
+        return
+
+    if not pd.api.types.is_numeric_dtype(data[y_var]):
+        st.write(f"{y_var} is not a numeric variable.")
+        return
+
+    # Remove missing values
+    data_clean = data[[x_var, y_var]].dropna()
+
+    if data_clean.empty:
+        st.write(f"No valid data available for plotting {x_var} and {y_var}.")
+        return
+
+    # Rename variables for display
+    x_var_ref = (x_var.replace('_', ' ')
+                 .replace('norm', '')
+                 .replace('mean', '')
+                 .replace('om', 'Organic matter')
+                 .replace('bd', 'Bulk density')
+                 .capitalize())
+
+    y_var_ref = (y_var.replace('_', ' ')
+                 .replace('norm', '')
+                 .replace('mean', '')
+                 .replace('om', 'Organic matter')
+                 .replace('bd', 'Bulk density')
+                 .capitalize())
+
+    # Generate scatter plot
+    fig = px.scatter(data_clean, x=x_var, y=y_var,
+                     title=f"{x_var_ref} vs {y_var_ref} %")
+    st.plotly_chart(fig)
+
+
 def trend_time_series(dframe, depth_c, select_state):
     """
     Display a time series trend for soil organic carbon with optional state and depth filters.
