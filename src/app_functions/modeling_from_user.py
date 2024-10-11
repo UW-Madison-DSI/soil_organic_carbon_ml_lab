@@ -104,6 +104,37 @@ def linear_regression_from_formula(formula: str, data: pd.DataFrame):
         raise ValueError(f"Error in regression: {str(e)}")
 
 
+def pre_processing_data_uploaded(data):
+    # Validate missing values
+    missing_values = data.isnull().sum().sum()
+    if missing_values > 0:
+        st.warning(f"The dataset contains {missing_values} missing values.")
+        return data
+
+    # Validate if 'soil_organic_carbon' column exists
+    if 'soil_organic_carbon' not in data.columns:
+        st.error("The 'soil_organic_carbon' column is missing from the dataset.")
+        return data
+
+    # Validate that 'soil_organic_carbon' values are between 0 and 100
+    if not data['soil_organic_carbon'].between(0, 100).all():
+        st.error("Some values in the 'soil_organic_carbon' column are outside the range [0, 100].")
+        return data
+
+    # If the dataset is valid, show a success message
+    st.success("Dataset is valid!")
+
+    # Display a histogram of 'soil_organic_carbon'
+    fig, ax = plt.subplots()
+    data['soil_organic_carbon'].hist(ax=ax, bins=10, color='blue', edgecolor='black')
+    ax.set_title('Soil Organic Carbon Distribution')
+    ax.set_xlabel('Soil Organic Carbon')
+    ax.set_ylabel('Frequency')
+    st.pyplot(fig)
+
+    return data
+
+
 def modeling():
     # Streamlit app layout
     st.title('My own soil organic carbon models')
@@ -119,7 +150,8 @@ def modeling():
 
         if uploaded_file is not None:
             # Read the CSV file
-            data = pd.read_csv(uploaded_file)
+            data0 = pd.read_csv(uploaded_file)
+            data = pre_processing_data_uploaded(data0)
             st.write("### Data Preview")
             st.write(data.head())
         else:
