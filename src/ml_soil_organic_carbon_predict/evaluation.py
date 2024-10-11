@@ -53,18 +53,18 @@ X_val, y_val = val_data[features], val_data[target]
 # Load models
 print("---------->>> Loading Models <<<----------")
 try:
-	rf_model = joblib.load('outputs_best_2/rf_model_conus_v3.joblib')
+	rf_model = joblib.load('pretrained_models/rf_model_conus_v3.joblib')
 	print("ok reading rf!")
 except Exception as e:
 	pass
 
 try:
-	voting_regressor = joblib.load('outputs_best_2/voting_regressor_optimized_conus_v2.joblib')
+	voting_regressor = joblib.load('pretrained_models/voting_regressor_optimized_conus_v2.joblib')
 	print("ok voting rf!")
 except Exception as e:
 	pass
 try:
-	xgb_model = joblib.load('outputs_best_2/xgb_model_optimized_conus_v2.joblib')
+	xgb_model = joblib.load('pretrained_models/xgb_model_optimized_conus_v2.joblib')
 	print("ok reading rf and xgboost!")
 except Exception as e:
 	pass
