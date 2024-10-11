@@ -188,14 +188,17 @@ def modeling():
                 st.pyplot(fig)
             else:
                 st.warning("Not enough numerical variables to show correlation heatmap.")
+                pass
 
 
         y, X = patsy.dmatrices(formula, subset_data)
         y = y.ravel()
 
         model_type = st.radio('Please choose the modeling you want to perform',
-                              ('Linear Regression', 'Random Forest'), key=100101)
-        if model_type == 'Random Forest':
+                              ('Linear Regression',
+                               'Random Forest' #not showed yet
+                               ), key=100101)
+        if model_type == 'Random Forests':
             st.write("It might take few minutes.")
             if st.button('Run Model'):
                 model = RandomForest(n_estimators=10, max_depth=3)
