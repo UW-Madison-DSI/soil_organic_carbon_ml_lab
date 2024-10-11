@@ -1,0 +1,3 @@
+[submodule "soil_organic_carbon_api"]
+	path = soil_organic_carbon_api
+	url = https://github.com/UW-Madison-DSI/soil_organic_carbon_api.git
