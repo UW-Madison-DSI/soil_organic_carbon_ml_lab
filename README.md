@@ -125,8 +125,8 @@ This project is licensed under the MIT License.
 For questions or inquiries, please contact:
 
 - **Jingyi Huang** - Associate Professor, Department of Soil and Environmental Sciences, UW-Madison
-  Google Scholar: [https://scholar.google.com/citations?user=ZEkcUDUAAAAJ&hl]
-  Lab website: [https://soilsensingmonitoring.soils.wisc.edu/]  
-  Email: [jhuang426@wisc.edu](mailto:jhuang426@wisc.edu)
+  - Google Scholar: [https://scholar.google.com/citations?user=ZEkcUDUAAAAJ&hl]
+  - Lab website: [https://soilsensingmonitoring.soils.wisc.edu/]  
+  - Email: [jhuang426@wisc.edu](mailto:jhuang426@wisc.edu)
 - **Maria Oros** - Data Scientist, UW-Madison DSI
   Email: [moros2@wisc.edu](mailto:moros2@wisc.edu)
