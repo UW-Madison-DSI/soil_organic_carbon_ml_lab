@@ -95,9 +95,9 @@ This will launch a web interface for interacting with the soil organic carbon ML
 The soil organic carbon data used in this project can be sourced from public datasets, as described [here](https://github.com/UW-Madison-DSI/soil_organic_carbon_ml_lab/blob/main/docs/soc_forecasting.pdf) or can be loaded from your local directory. 
 
 - **states_shape/States_shapefile.shp**: Shapefile used for geospatial analysis of states.
-- **data/sample_soc_observations/**: Contains sample data for soil organic carbon observations. This data was retrived in a big effor of data extraction from public sources.
+- **data/sample_soc_observations/**: Contains sample data for soil organic carbon observations. This data was retrieved with extensive effort of data extraction from various public sources.
 
-Ensure that the data is structured correctly in the required format before running the models.
+Ensure the data is structured correctly in the required format before running the models.
 
 ## Features
 
@@ -124,7 +124,9 @@ This project is licensed under the MIT License.
 
 For questions or inquiries, please contact:
 
-- **Jingyi Huang** - Assistant Professor, Soil Sciences Dept at UW-Madison
+- **Jingyi Huang** - Associate Professor, Department of Soil and Environmental Sciences, UW-Madison
+  Google Scholar: [https://scholar.google.com/citations?user=ZEkcUDUAAAAJ&hl]
+  Lab website: [https://soilsensingmonitoring.soils.wisc.edu/]  
   Email: [jhuang426@wisc.edu](mailto:jhuang426@wisc.edu)
 - **Maria Oros** - Data Scientist, UW-Madison DSI
   Email: [moros2@wisc.edu](mailto:moros2@wisc.edu)
