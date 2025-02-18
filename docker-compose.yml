@@ -1,0 +1,20 @@
+services:
+  soc-app:
+    image: "nginx:latest"
+    env_file:
+      - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app_name.rule=Host(`test.services.dsi.wisc.edu`)"
+      - "traefik.http.routers.app_name.entrypoints=websecure"
+      - "traefik.http.routers.app_name.tls=true"
+      - "traefik.http.routers.app_name.tls.certresolver=myresolver"
+      - "com.centurylinklabs.watchtower.enable=true"  # Watch for docker image updates
+      # - "traefik.docker.network=traefik_network"  # If you use more than one network, you need to specify the network where Traefik is running
+    networks:
+      - traefik_network
+    restart: unless-stopped
+
+networks:
+  traefik_network:
+    external: true
