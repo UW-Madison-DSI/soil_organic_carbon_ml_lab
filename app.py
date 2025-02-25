@@ -38,8 +38,8 @@ def main():
     st.sidebar.title("Functionalities")
 
     sidebar_object = st.sidebar.radio('Please choose the option', ('My SOC models',
-                                                                   'SOC sample data',
-                                                                   "SOC maps"), key=100)
+                                                                   'SOC sample data' #"SOC maps"
+                                                                  ), key=100)
 
     if sidebar_object == 'SOC sample data':
         observed_soil_dynamic_properties()
