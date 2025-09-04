@@ -35,9 +35,8 @@ from streamlit_folium import folium_static
 
 import emoji
 
-from src.app_functions.functions import *
+from src.app_functions.functions import add_time_series_prediction_with_predictors
 from src.app_functions.map_layers import *
-
 
 @st.cache_data
 def load_data_conus():
@@ -172,5 +171,16 @@ def observed_soil_dynamic_properties() -> None:
                 scatterplot_var(filtered_data1, soil_properties, 'soil_organic_carbon')
             with col2:
                 histogram_var(filtered_data1, soil_properties)
+
+
+        # In your main app function (e.g., `main()` or where your Streamlit UI is defined)
+        st.sidebar.header("Time Series Analysis")
+        if st.button("Run Time Series Prediction"):
+            # Assuming 'filtered_data' is a DataFrame filtered by map bounds
+            add_time_series_prediction_with_predictors(
+                    filtered_data1,
+                    [soil_properties]  # Use a variable from your filters
+                )
+
     except Exception as e:
         st.write(f"Error: {e}")

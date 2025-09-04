@@ -156,3 +156,131 @@ def map_customization_function():
     folium.Marker([lat, lon], popup="New York City").add_to(m)
 
     st_folium(m, width=700, height=500)
+
+
+# Assuming 'filtered_data' contains 'year', 'soil_organic_carbon', 'temperature', and 'precipitation'
+import statsmodels.api as sm
+
+
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
+
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
+
+def add_time_series_prediction_with_predictors(
+    data: pd.DataFrame,
+    predictor_variables: list,
+    n_periods: int = 5,
+    agg: str = "mean"  # how to combine multiple rows per year
+) -> None:
+    """
+    Forecast soil_organic_carbon with exogenous predictors, allowing multiple rows per year.
+    Uses a simple step index for the model (0..T-1) and keeps 'year' only for plotting.
+    """
+    variable_name = "soil_organic_carbon"
+
+    # Basic checks
+    if 'year' not in data.columns or variable_name not in data.columns:
+        st.warning("Data must contain 'year' and 'soil_organic_carbon' columns.")
+        return
+    if not all(col in data.columns for col in predictor_variables):
+        st.error(f"Missing one or more predictor variables: {predictor_variables}")
+        return
+
+    # Ensure numeric years and aggregate duplicates
+    df = data.copy()
+    df['year'] = pd.to_numeric(df['year'], errors='coerce')
+    df = df.dropna(subset=['year'])
+    df['year'] = df['year'].astype(int)
+
+    # Choose aggregation for multiple rows per year
+    if agg == "median":
+        ts_data = (df.groupby('year')[[variable_name] + predictor_variables]
+                     .median()
+                     .sort_index()
+                     .dropna())
+    else:
+        ts_data = (df.groupby('year')[[variable_name] + predictor_variables]
+                     .mean()
+                     .sort_index()
+                     .dropna())
+
+    if ts_data.empty or len(ts_data) < 3:
+        st.warning("Not enough aggregated yearly data (need ≥ 3 years) after cleaning.")
+        return
+
+    # Real years for display
+    years_obs = ts_data.index.to_numpy().astype(int)
+    last_year = int(years_obs[-1])
+    future_years = np.arange(last_year + 1, last_year + 1 + n_periods, dtype=int)
+
+    # Endog/exog for the model — use a simple 0..T-1 step index internally
+    y = ts_data[variable_name].to_numpy()
+    X = ts_data[predictor_variables].to_numpy()
+
+    # Fit SARIMAX (ARIMAX-like)
+    try:
+        model = SARIMAX(
+            endog=y,
+            exog=X,
+            order=(1, 0, 1),
+            enforce_stationarity=False,
+            enforce_invertibility=False
+        )
+        results = model.fit(disp=False)
+
+        # Future exogenous: repeat the last observed row (naive)
+        future_exog = np.tile(X[-1, :], (n_periods, 1))
+
+        # Forecast n steps ahead
+        # Forecast n steps ahead
+        fcst = results.get_forecast(steps=n_periods, exog=future_exog)
+        mean_forecast = fcst.predicted_mean#.to_numpy()  # shape (n_periods,)
+        conf_int = fcst.conf_int()#.to_numpy()  # (n_periods x 2)
+
+        # -------- Plot --------
+        fig = plt.figure(figsize=(10, 6))
+        ax = plt.gca()
+
+        # Observations
+        ax.plot(years_obs, y, label='Observations', marker='o')
+
+        # Forecast
+        ax.plot(future_years, mean_forecast, label='Predictions', linestyle='--', marker='x')
+
+        # CI band
+        ax.fill_between(
+            future_years,
+            conf_int[:, 0],  # lower bound
+            conf_int[:, 1],  # upper bound
+            alpha=0.2,
+            color="orange",
+            label="95% CI"
+        )
+
+        ax.set_title(f"Time Series Prediction for {variable_name} with Predictors")
+        ax.set_xlabel("Year")
+        ax.set_ylabel(variable_name)
+        ax.grid(True, alpha=0.3)
+        ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+        ax.legend()
+        st.pyplot(fig)
+
+        # Forecast table with explicit years + CI
+        out = pd.DataFrame({
+            'year': future_years,
+            'predicted_mean': mean_forecast,
+            'lower_ci': conf_int[:, 0],
+            'upper_ci': conf_int[:, 1]
+        })
+        st.markdown(f"**Predicted {variable_name} for the next {n_periods} years:**")
+        st.dataframe(out)
+
+
+    except Exception as e:
+        st.error(f"An error occurred during time series analysis: {e}")
