@@ -1,0 +1,47 @@
+# ---- Streamlit + Geo stack (direct to Traefik) ----
+FROM python:3.11-slim
+
+# Avoid interactive tz/locale prompts during apt
+ARG DEBIAN_FRONTEND=noninteractive
+
+# System libs for geopandas/rasterio/etc + curl for healthcheck
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gdal-bin libgdal-dev \
+    libgeos-dev libproj-dev libspatialindex-dev \
+    libgl1 libglib2.0-0 \
+    curl ca-certificates git \
+ && rm -rf /var/lib/apt/lists/*
+
+# Faster/safer Python builds
+RUN python -m pip install --no-cache-dir -U pip setuptools wheel
+
+WORKDIR /app
+
+# First copy requirements to leverage Docker layer caching
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Streamlit config goes to $HOME/.streamlit/
+RUN mkdir -p /root/.streamlit
+COPY .streamlit/config.toml /root/.streamlit/config.toml
+
+# App code
+COPY . /app
+
+# Useful env for Streamlit in containers
+ENV PYTHONUNBUFFERED=1 \
+    STREAMLIT_SERVER_HEADLESS=true \
+    STREAMLIT_SERVER_PORT=8501 \
+    STREAMLIT_SERVER_ADDRESS=0.0.0.0 \
+    STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+
+# (Optional) expose for local runs; Traefik doesn't require EXPOSE but it’s handy
+EXPOSE 8501
+
+# Simple healthcheck (Streamlit responds once booted)
+HEALTHCHECK --interval=10s --timeout=3s --retries=20 \
+  CMD curl -fsS http://localhost:8501/ || exit 1
+
+# Run your app
+CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]

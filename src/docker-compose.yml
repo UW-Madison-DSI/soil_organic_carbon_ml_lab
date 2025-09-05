@@ -1,0 +1,26 @@
+services:
+  soc_app:
+    build: .
+    container_name: soc_app
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: >
+      bash -lc "streamlit run app.py --server.port 8501 --server.address 0.0.0.0"
+    expose:
+      - "8501"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_network"
+      - "traefik.http.routers.soc_app.rule=Host(`soc-predict-jh.services.dsi.wisc.edu`)"
+      - "traefik.http.routers.soc_app.entrypoints=websecure"
+      - "traefik.http.routers.soc_app.tls=true"
+      - "traefik.http.routers.soc_app.tls.certresolver=myresolver"
+      - "traefik.http.services.soc_app.loadbalancer.server.port=8501"
+    networks: [traefik_network]
+
+networks:
+  traefik_network:
+    external: true
